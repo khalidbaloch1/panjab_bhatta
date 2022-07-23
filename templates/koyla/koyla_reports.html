@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block menu_koylas %}active{% endblock %}
+{% block sub_menu_all_koyla %}active{% endblock %}
+{% load static %}
+{% block content %}
+    {% load template_tags %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-11">
+                <br>
+                <button type="button" class="btn btn-primary print-invoice-btn" onclick="PrintInvoice('print-invoices')" style="float: left">Print Reports</button>&nbsp;&nbsp;
+                <br><br><br>
+                <div class="content-panel table-responsive print-invoices" id="print-invoices">
+                    {#<h2 class="text-center"><span style="color: teal; font-weight: bold">Koyla Reports</span></h2>#}
+                    <h6 class="text-center"><strong style="color: black; font-size: 16px;">{{ koyla.name|title }}</strong></h6>
+                    <br>
+                    <div style="float: right; padding: 12px">
+                        <strong><a href="#">Total Carriage:</a><span style="color: #C9312C !important;">{{ total_carriage|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                        <strong><a href="#">Total Amount: </a><span style="color: #C9312C !important;">{{ total_amount|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                        <strong><a href="#">Total Remaining Amount: </a><span style="color: #C9312C !important;">{{ remaining_payment|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <hr>
+                    <table class="table table-striped table-advance table-hover reports table table-bordered incoices-table">
+                        <thead style="background-color: teal !important;">
+                        <tr style="color: white">
+                            <th class="text-center">S.No</th>
+                            <th class="text-center">Date</th>
+                            <th class="text-center">City</th>
+                            <th class="text-center">Season</th>
+                            <th class="text-center">Vehicle #</th>
+                            <th class="text-center">Per Carriage / KG</th>
+                            <th class="text-center">Carriage / KG</th>
+                            <th class="text-center">Total</th>
+                            <th class="text-center">Remaining</th>
+                        </tr>
+                        </thead>
+                        <tbody class="reports-table-body">
+                        {% with remaining=0 %}
+                        {% for q in query %}
+                            {% if q.payment_date %}
+                            <tr>
+                                    <td class="text-center">{{ forloop.counter }}</td>
+                                    <td class="text-center"><span style="color: red !important; font-weight: bold">{{ q.payment_date|date:"d/m/y" }}</span></td>
+                                    <td colspan="2" class="text-center"><span style="color: red !important; font-weight: bold">{% if q.details %}{{ q.details}}{% else %}{{ q.payment_type }}{% endif %}</span></td>
+                                    <td colspan="4" class="text-center"><span style="color: red !important; font-weight: bold">{{ q.amount|floatformat:'-2' }}</span></td>
+                                    {% update_variable remaining|subtract:q.amount|floatformat:"-2" as remaining %}
+                                    <td class="text-center"><span style="color: red !important; font-weight: bold">{{ remaining }}</span></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="text-center"><span style="color: black">{{ forloop.counter }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.date_added|date:'d/m/y' }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.city|title }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.season }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.transport }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.amount_per_carriage|floatformat:'-2' }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.carriage|floatformat:'-2' }}</span></td>
+                                    <td class="text-center"><span style="color: black">{{ q.amount|floatformat:'-2' }}</span></td>
+                                    {% update_variable remaining|add:q.amount|floatformat:"-2" as remaining %}
+                                    <td class="text-center"><span style="color: black">{{ remaining }}</span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(function () {
+            $('.filter-btn').on('click', function () {
+                var error = false;
+                if ($('.start_date').val() == '') {
+                    $('.start_date').css('border', '1px solid red');
+                    error = true;
+                }
+
+
+                if($('.end_date').val() == '') {
+                    $('.end_date').css('border', '1px solid red');
+                    error = true;
+                }
+
+                if(error == true) {
+                    return;
+                }
+
+                var start_date = $('.start_date').val();
+                var end_date = $('.end_date').val();
+
+                var koyla_reports_url = '{% url "koyla:reports" koyla_id=koyla.id %}';
+
+                window.location.href = koyla_invoices_url + 'start/' + start_date + '/end/' + end_date + '/';
+
+
+            });
+
+        });
+        function PrintInvoice(divName){
+             var printContents = document.getElementById(divName).innerHTML;
+             var originalContents = document.body.innerHTML;
+             document.body.innerHTML = printContents;
+             $('table').removeClass('table-bordered');
+             $('tr').css('border', '1px solid');
+             $('td').css('border', '1px solid');
+             $('th').css('border', '1px solid');
+             $('.remove-print-display').hide();
+             $('.print-show-options').show();
+             window.print();
+             document.body.innerHTML = originalContents;
+             $('.remove-print-display').show();
+             $('.print-show-options').hide();
+        }
+    </script>
+{% endblock %}

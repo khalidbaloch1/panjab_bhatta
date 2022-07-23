@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block menu_sales %}active{% endblock %}
+{% block sub_menu_create_invoice %}active{% endblock %}
+
+{% block content %}
+	<style>
+		.item-row th {
+			background: teal;
+		}
+
+		.delete-btn {
+			position: relative;
+		}
+
+		.delete {
+			display: block;
+			color: #000;
+			text-decoration: none;
+			position: absolute;
+			background: #EEEEEE;
+			font-weight: bold;
+			padding: 0px 3px;
+			border: 1px solid;
+			top: -6px;
+			left: -6px;
+			font-family: Verdana;
+			font-size: 12px;
+		}
+	</style>
+
+	<div class="col-lg-9 col-md-10 col-sm-10">
+		<br>
+		<div class="content-panel" style="padding: 5px">
+			<div class="row">
+				<div class="col-xs-12 col-md-12 table-responsive">
+					<div>
+						<h2 class="text-center">Invoice</h2>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-12">
+					<hr>
+					<div class="row">
+						<div class="col-xs-6 col-md-6">
+                            <label>Season</label>
+                            <input class="form-control season" id="season-id" placeholder="Season" list="season-list" autocomplete="off">
+                            <datalist id="season-list">
+                                {% for season in seasons %}
+                                    <option data-id="{{ season.id }}" value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist><br>
+                            <label>Bhatta</label>
+                            <input class="form-control bhatta" id="bhatta-id" placeholder="Bhatta" list="bhatta-list" >
+                            <datalist id="bhatta-list" autocomplete="off">
+                                {% for bhatta in bhatta_list %}
+                                    <option data-id="{{ bhatta.id }}" value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                            </datalist><br>
+                            <label>Customer</label>
+                            <input class="form-control customer" id="customer-id" autocomplete="off" placeholder="Customer" list="customer-list" >
+                            <datalist id="customer-list">
+                                {% for customer in customers %}
+                                    <option data-id="{{ customer.id }}" value="{{ customer.name }}">{{ customer.bhatta }}</option>
+                                {% endfor %}
+                            </datalist><br>
+                            <br>
+						</div>
+                        <div class="col-xs-6 col-md-6">
+                            <label>Challan No</label>
+                            <input type="text" name="challan_no" class="form-control challan_no" onkeyup="checkDec(this);" placeholder="Challan No"><br>
+                            <label>Transport #</label>
+                            <input type="text" name="transport" class="form-control transport" onkeyup="checkDec(this);" placeholder="Transport"><br>
+                            <label>Bill Date</label>
+                            <input type="date" name="added_date" class="form-control added_date"><br>
+                        </div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="table-responsive">
+						<table class="table table-bordered table-responsive">
+							<thead>
+							<tr class="item-row">
+								<th><span style="color: white"> Item</span></th>
+								<th><span style="color: white">Price</span></th>
+								<th><span style="color: white">Quantity</span></th>
+								<th><span style="color: white">Total</span></th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr id="hiderow">
+								<td colspan="4">
+
+									<a id="addRow" href="javascript:;" title="Add Item" class="btn btn-primary">Add Item</a> <span class="item-error" style="color: red; display: none">please add Item</span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<tr style="color: black; font-weight: bold">
+								<td><strong>Total Quantity: </strong><span id="totalQty" style="color: red; font-weight: bold">0</span> Units</td>
+								<td></td>
+								<td class="text-right"><strong>Sub Total</strong></td>
+								<td><span id="subtotal">0.00</span></td>
+							</tr>
+							<td></td>
+							<tr style="color: black; font-weight: bold">
+								<td></td>
+								<td></td>
+								<td class="text-right"><strong>Discount</strong></td>
+								<td><input class="form-control" id="discount" value="0" type="text"></td>
+							</tr>
+							<tr style="color: black; font-weight: bold">
+								<td></td>
+								<td></td>
+								<td class="text-right"><strong>Shipping</strong></td>
+								<td><input class="form-control" id="shipping" value="0" type="text"></td>
+							</tr>
+							<tr style="color: black; font-weight: bold">
+								<td></td>
+								<td></td>
+								<td class="text-right"><strong>Grand Total</strong></td>
+								<td><span id="grandTotal" style="color:red">0</span></td>
+							</tr>
+                            <tr style="color: black; font-weight: bold">
+								<td></td>
+								<td></td>
+								<td class="text-right"><strong>Received Amount</strong></td>
+								<td><input class="form-control" id="paidAmount" value="0" type="text"></td>
+							</tr>
+                            <tr style="color: black; font-weight: bold">
+								<td></td>
+								<td></td>
+								<td class="text-right"><strong>Remaining Amount</strong></td>
+								<td><span id="remainingAmount">0</span></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<a id="create-invoice" href="javascript:;" title="Create Invoice" class="btn btn-primary pull-right" style="float: right" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i>Processing Order">Create Invoice</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+	<script src="{% static 'js/invoice.js' %}"></script>
+    <script>
+        jQuery(document).ready(function(){
+			jQuery().invoice({
+				addRow : "#addRow",
+				delete : ".delete",
+				parentClass : ".item-row",
+
+				price : ".price",
+				qty : ".qty",
+				total : ".total",
+				totalQty: "#totalQty",
+
+				subtotal : "#subtotal",
+				discount: "#discount",
+				shipping : "#shipping",
+				grandTotal : "#grandTotal",
+
+                remainingAmount: '#remainingAmount',
+                paidAmount: '#paidAmount'
+			});
+		});
+
+        $('#create-invoice').on('click', function () {
+            var season = $('#season-id').val();
+            var bhatta = $('#bhatta-id').val();
+            var items = [];
+            var total_quantity = 0;
+            for (var i=1; i<$('.item-row').length; i+=1) {
+                var products = {};
+                products['item_name'] = $('.item-row').eq(i).find('#invoice-item').val();
+                products['price'] = $('.item-row').eq(i).find('.price').val();
+                products['qty'] = $('.item-row').eq(i).find('.qty').val();
+                products['total'] = $('.item-row').eq(i).find('.total').text();
+                if ($('.item-row').eq(i).find('#invoice-item').val() != "") {
+                    items.push(products);
+                    total_quantity += Number(products['qty']);
+                }
+            }
+
+            var sub_total = $('#subtotal').text();
+            var discount = $('#discount').val();
+            var shipping = $('#shipping').val();
+            var grand_total = $('#grandTotal').text();
+            var remaining_amount = $('#remainingAmount').text();
+            var paid_amount = $('#paidAmount').val();
+            var totalQty = total_quantity;
+            var challan_no = $('.challan_no').val();
+            var transport = $('.transport').val();
+            var details = $('.details').val();
+            var added_date = $('.added_date').val();
+
+            var customer_value = $('.customer').val();
+            var customer_id = $('#customer-list [value="' + customer_value + '"]').data('id');
+
+
+            $.post("{% url 'sales:create_invoice_api' %}", {
+                    customer_id: customer_id,
+                    bhatta: bhatta,
+                    season: season,
+                    sub_total: sub_total,
+                    discount: discount,
+                    shipping: shipping,
+                    grand_total: grand_total,
+                    totalQty: totalQty,
+                    remaining_amount: remaining_amount,
+                    paid_amount: paid_amount,
+                    challan_no: challan_no,
+                    transport: transport,
+                    details: details,
+                    added_date: added_date,
+                    items: JSON.stringify(items)
+                }, function (result, status) {
+                    window.location.href = result.success_url;
+                }
+            ).fail(function(xhr, status, error) {
+                alert('Something is wrong! Please check all fields and try again.')
+            });
+
+        });
+
+    </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script>
+$('#create-invoice').on('click', function() {
+    var $this = $(this);
+  $this.button('loading');
+    setTimeout(function() {
+       $this.button('reset');
+   }, 5000);
+});
+
+$('.form-control').click (function () {
+    $('.list-error').hide();
+    checkDec(this);
+
+});
+    </script>
+{% endblock %}

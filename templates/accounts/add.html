@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block menu_account %}active{% endblock %}
+{% block sub_menu_add_account %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <br>
+        <a href="{% url 'account:list' %}"><button type="button" class="btn btn-primary" style="float: left">Go To List</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">Add Expenses</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="#" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            {% csrf_token %}
+
+                            <label class="form-control-label" name="bhatta_name">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta_name">
+                                {% for bhatta in bhatta_list %}
+                                <option value="{{ bhatta.name }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+
+                            <label><strong>Name</strong></label>
+                            <input type="text" class="form-control name" name="name" placeholder="Please Add Name"><br>
+
+                            <label class="form-control-label" name="account_type">Department<span style="color:red">*</span></label>
+                            <select class="form-control" name="account_type">
+                                <option value="Income Account">Income Account</option>
+                                <option value="Owner Account">Owner Account</option>
+                            </select>
+                            <br>
+
+                            <button type="submit" class="btn btn-primary product-sub-btn" style="float: right">Save Expense</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

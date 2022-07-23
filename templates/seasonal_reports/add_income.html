@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block menu_income %}active{% endblock %}
+{% block sub_menu_create_income %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <br>
+        <a href="{% url 'expense:income_list' %}"><button type="button" class="btn btn-primary" style="float: left">Incomes</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">New Estimated Income</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'expense:create_income' %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            {% csrf_token %}
+                            <label><strong>Availability Type</strong></label>
+                            <select class="form-control availability_type" name="availability_type">
+                                <option value="Inside">Inside</option>
+                                <option value="Outside">Outside</option>
+                            </select>
+                            <br>
+                            <label><strong>Bhatta</strong></label>
+                            <input type="text" class="form-control bhatta_name" name="bhatta_name" autocomplete="off" placeholder="Select Bhatta" list="bhatta_list">
+                            <datalist id="bhatta_list">
+                                {% for bhatta in bhattas %}
+                                    <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Season</strong></label>
+                            <input type="text" class="form-control season_name" name="season_name" autocomplete="off" placeholder="Season" list="season-list">
+                            <datalist id="season-list">
+                                {% for season in seasons %}
+                                    <option value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Stock Item</strong></label>
+                            <input type="text" class="form-control stock_name" name="stock_name" autocomplete="off" placeholder="Select Item" list="stock-list">
+                            <datalist id="stock-list">
+                                {% for stock in stocks %}
+                                    <option value="{{ stock }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Available Stock Quantity</strong></label>
+                            <input type="text" class="form-control stock_quantity" name="stock_quantity" value="0"><br>
+                            <label><strong>Estimate Price</strong></label>
+                            <input type="text" class="form-control estimate_price" name="estimate_price" value="0"><br>
+                            <label><strong>Total Amount</strong></label>
+                            <input type="text" class="form-control total_amount" name="total_amount" value="0" readonly><br>
+                            <button type="submit" class="btn btn-primary product-sub-btn" style="float: right">Save Income</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(function(){
+            $('.stock_name').on('change', function () {
+                if ($('.availability_type').val() == 'Outside') {
+                    $.post('/stock/item/available/api/',
+                        {'bhatta_name': $('.bhatta_name').val(), 'item_name': $('.stock_name').val(), 'season': $('.season_name').val()},
+                        function (result, status) {
+                            $('.stock_quantity').val(result.available_items);
+                            $('.total_amount').val(parseFloat($('.stock_quantity').val()) * parseFloat($('.estimate_price').val()));
+                        });
+                }
+            });
+
+            $('.estimate_price').on('change', function () {
+                $('.total_amount').val(parseFloat($(this).val()) * parseFloat($('.stock_quantity').val()));
+                if ($('.total_amount').val() ==  0 ) {
+                    $('.total_amount').val('');
+                }
+            });
+            $('.stock_quantity').on('change', function () {
+                $('.total_amount').val(parseFloat($(this).val()) * parseFloat($('.estimate_price').val()));
+                if ($('.total_amount').val() ==  0 ) {
+                    $('.total_amount').val('');
+                }
+            });
+
+
+        });
+    </script>
+{% endblock %}

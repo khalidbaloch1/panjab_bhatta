@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block menu_koylas %}active{% endblock %}
+{% block sub_menu_all_koyla %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'koyla:ledger_details' koyla_id=koyla.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h2 class="text-center"><a href="#">{{ koyla.name|title }}</a></h2>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'koyla:add_ledger' pk=koyla.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label><strong>Season</strong></label>
+                            <input type="text" class="form-control season_year" name="season_year" autocomplete="off" placeholder="Select Season" list="season_list">
+                            <datalist id="season_list">
+                                {% for season in seasons %}
+                                    <option value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Date</strong></label>
+                            <input type="date" class="form-control date_added" name="date_added"><br>
+                            <label><strong>City</strong></label>
+                            <input type="text" class="form-control city" name="city" placeholder="City"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <div class="col-lg-12">
+                                <label><strong>Vehicle #</strong></label>
+                                <input type="text" class="form-control transport" name="transport" placeholder="Vehicle No"><br>
+                            </div>
+                            <div class="col-lg-6">
+                                <label><strong>Total Ton / KG</strong></label>
+                                <input type="text" class="form-control carriage" name="carriage" placeholder="Carriage / KG"><br>
+                            </div>
+                            <div class="col-lg-6">
+                                <label><strong>Amount Per Carriage / KG</strong></label>
+                                <input type="text" class="form-control amount_per_carriage" name="amount_per_carriage" value="0"><br>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong>Total Amount</strong></label>
+                                <input type="number" class="form-control amount" name="amount" value="0"><br>
+                                <input type="hidden" name="koyla" value="{{ koyla.id }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+        <script>
+        $('.amount_per_carriage').on('change', function () {
+            $('.amount').val(parseFloat($(this).val()) * parseFloat($('.carriage').val()));
+            $('.total_amount').val(parseFloat($('.amount').val()) + parseFloat($('.total_payment').val()));
+            if ($('.total_amount').val() ==  0 ) {
+                $('.total_amount').val('');
+            }
+        });
+
+    </script>
+{% endblock %}

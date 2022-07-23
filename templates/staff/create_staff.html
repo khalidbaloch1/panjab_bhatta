@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block menu_staff %}active{% endblock %}
+{% block sub_menu_new_staff %}active{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'staff:list' %}"><button type="button" class="btn btn-primary" style="float: left">All Staffs</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'staff:create' %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <h4 class="text-center alert alert-info">Create Staff</h4>
+                            <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label><strong>Name</strong></label>
+                            <input type="text" class="form-control name" name="name" placeholder="Staff Name"><br>
+                            {#<label><strong>Father Name</strong></label>#}
+                            {#<input type="text" class="form-control father_name" name="father_name" placeholder="Father Name"><br>#}
+                            {#<label><strong>CNIC</strong></label>#}
+                            {#<input type="text" class="form-control cnic" name="cnic" placeholder="CNIC">#}
+                            <label><strong>Bhatta</strong></label>
+                            <input type="text" class="form-control bhatta_name" name="bhatta_name" autocomplete="off" placeholder="Select Bhatta" list="bhatta_list">
+                            <datalist id="bhatta_list">
+                                {% for bhatta in bhattas %}
+                                    <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Staff Type</strong></label>
+                            <input type="text" class="form-control staff_type" name="staff_type" autocomplete="off" placeholder="Select type" list="staff_type_list">
+                            <datalist id="staff_type_list">
+                                <option value="Salary Staff"></option>
+                                <option value="Weekly Staff"></option>
+                                <option value="Other Staff"></option>
+                                {#<option value="Multiple Staff"></option>#}
+                                {#<option value="Petroleum Staff"></option>#}
+                            </datalist>
+                            <br>
+                            <label><strong>Designation</strong></label>
+                            <input type="text" class="form-control designation" name="designation" placeholder="Designation"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <label><strong>Rate</strong></label>
+                            <input type="text" class="form-control rate" name="rate" placeholder="Rate"><br>
+                            <label><strong>Mobile</strong></label>
+                            <input type="text" class="form-control mobile_no" name="mobile_no" placeholder="Mobile No"><br>
+                            <label><strong>Joining Date</strong></label>
+                            <input type="date" class="form-control joining_date" name="joining_date"><br>
+                            <label><strong>Leaving Date</strong></label>
+                            <input type="date" class="form-control leaving_date" name="leaving_date"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Create Staff</button>
+                        </div>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

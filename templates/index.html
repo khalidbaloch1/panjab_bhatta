@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block menu_dashboard %}active{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12 main-chart">
+            <div class="row">
+                <div class="col-md-3 mb"></div>
+                <div class="col-md-6">
+                    <select class="form-control" id="season_filter">
+                        <option>All Seasons</option>
+                        {% for season in seasons %}
+                            <option>{{ season.season_year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3 mb">
+                    <div class="darkblue-panel pn">
+                        <div class="darkblue-header">
+                            <h5>Total Staff</h5>
+                        </div>
+                        <canvas id="serverstatus02" height="120" width="120"></canvas>
+                        <script>
+                            var doughnutData = [
+                                {
+                                    value: 60,
+                                    color:"#68dff0"
+                                },
+                                {
+                                    value : 40,
+                                    color : "#444c57"
+                                }
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("serverstatus02").getContext("2d")).Doughnut(doughnutData);
+                        </script>
+                        <p>{{ today_date }}</p>
+                        <footer>
+                            <div class="pull-left">
+                                <h5><i class="fa fa-hdd-o"></i> No. of Staff: {{ total_staff }}</h5>
+                            </div>
+                        </footer>
+                    </div><! -- /darkblue panel -->
+                </div><!-- /col-md-4 -->
+
+                <div class="col-md-3 mb">
+                    <div class="darkblue-panel pn">
+                        <div class="darkblue-header">
+                            <h5>Total Customers</h5>
+                        </div>
+                        <canvas id="serverstatus001" height="120" width="120"></canvas>
+                        <script>
+                            var doughnutData = [
+                                {
+                                    value: 80,
+                                    color:"#68dff0"
+                                },
+                                {
+                                    value : 20,
+                                    color : "#444c57"
+                                }
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("serverstatus001").getContext("2d")).Doughnut(doughnutData);
+                        </script>
+                        <p>{{ today_date }}</p>
+                        <footer>
+                            <div class="pull-left">
+                                <h5><i class="fa fa-hdd-o"></i> No. of Customers: {{ total_customers }}</h5>
+                            </div>
+                        </footer>
+                    </div><! -- /darkblue panel -->
+                </div><!-- /col-md-4 -->
+
+                <div class="col-md-3 mb">
+                    <div class="darkblue-panel pn">
+                        <div class="darkblue-header">
+                            <h5>Customers Remaining Balance</h5>
+                        </div>
+                        <canvas id="serverstatus002" height="120" width="120"></canvas>
+                        <script>
+                            var doughnutData = [
+                                {
+                                    value: 40,
+                                    color:"#68dff0"
+                                },
+                                {
+                                    value : 60,
+                                    color : "#444c57"
+                                }
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("serverstatus002").getContext("2d")).Doughnut(doughnutData);
+                        </script>
+                        <p>{{ today_date }}</p>
+                        <footer>
+                            <div class="pull-left">
+                                <h5><i class="fa fa-hdd-o"></i> Remaining Balance: {{ total_customer_balance|floatformat:'-2' }}</h5>
+                            </div>
+                        </footer>
+                    </div><! -- /darkblue panel -->
+                </div><!-- /col-md-4 -->
+
+                <div class="col-md-3 mb">
+                    <div class="darkblue-panel pn">
+                        <div class="darkblue-header">
+                            <h5>{% if season_kw %}{{ season_kw }}{% else %}All{% endif %} Invoices</h5>
+                        </div>
+                        <canvas id="serverstatus003" height="120" width="120"></canvas>
+                        <script>
+                            var doughnutData = [
+                                {
+                                    value: 50,
+                                    color:"#68dff0"
+                                },
+                                {
+                                    value : 50,
+                                    color : "#444c57"
+                                }
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("serverstatus003").getContext("2d")).Doughnut(doughnutData);
+                        </script>
+                        <p>{{ today_date }}</p>
+                        <footer>
+                            <div class="pull-left">
+                                <h5><i class="fa fa-hdd-o"></i> No. of Invoices: {{ total_invoices|floatformat:'-2' }}</h5>
+                            </div>
+                        </footer>
+                    </div><! -- /darkblue panel -->
+                </div><!-- /col-md-4 -->
+
+            </div><!-- /row -->
+
+            <div class="row">
+                <div class="col-lg-12 main-chart">
+                    <div id="graph-01" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 main-chart">
+                    <div id="graph-02" style="min-width: 310px; height: 500px; margin: 0 auto"></div>
+                </div>
+            </div>
+
+        </div><!-- /col-lg-9 END SECTION MIDDLE -->
+
+
+        <!-- **********************************************************************************************************************************************************
+        RIGHT SIDEBAR CONTENT
+        *********************************************************************************************************************************************************** -->
+
+    </div><! --/row -->
+
+<-- Home Page success Msg -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    let btn
+    swal ( "Nawab Bricks & Manufacturs" ,  "WEL COME BACK TO HOME PAGE!" ,  "success" )
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+    {% load template_tags %}
+    {{ block.super }}
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/highcharts-exporting.js' %}"></script>
+    <script src="{% static 'js/highcharts-export-data.js' %}"></script>
+    <script>
+
+        $('#season_filter').on('change', function(){
+            if ($(this).val() ==  'All Seasons') {
+                var season = 'Seasons';
+            } else {
+                var season = $(this).val()
+            }
+            var index_url = '{% url "common:index" %}';
+            window.location.href = index_url + 'index/' + season + '/';
+        });
+
+        $('#season_filter option:contains("{{ season_kw }}")').prop('selected',true);
+        $('#bhatta_filter option:contains("{{ bhatta_kw }}")').prop('selected',true);
+
+
+        var bhattas_list = [];
+        var avaiable_stock = [];
+        var purchased_stock = [];
+        {% for bhatta in bhattas %}
+            bhattas_list.push('{{ bhatta.name }}');
+            var stock_availablility = 0;
+            var stock_purchaseable = 0;
+            {% for stock in bhatta.stock_bhatta.all %}
+                {% available_stock stock=stock season=season_kw as available_stock %}
+                stock_availablility = stock_availablility + {{ available_stock }};
+                {% purchased_stock stock=stock season=season_kw as purchased_stock %}
+                stock_purchaseable = stock_purchaseable + {{ purchased_stock }}
+            {% endfor %}
+            avaiable_stock.push(stock_availablility);
+            purchased_stock.push(stock_purchaseable);
+        {% endfor %}
+
+        Highcharts.chart('graph-01', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '{{ season_kw }} Available Bricks Details'
+            },
+            xAxis: {
+                categories: bhattas_list
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                color: '#424A5E',
+                name: 'Available Bricks',
+                data: avaiable_stock
+            }]
+        });
+
+        Highcharts.chart('graph-02', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '{{ season_kw }} Purchased Bricks Details'
+            },
+            xAxis: {
+                categories: bhattas_list
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Purchased Bricks',
+                color: '#41778F',
+                data: purchased_stock
+            }]
+        });
+    </script>
+{% endblock %}

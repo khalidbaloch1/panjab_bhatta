@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block menu_customers %}active{% endblock %}
+{% block sub_menu_new_customer %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <br>
+        <a href="{% url 'customer:list' %}"><button type="button" class="btn btn-primary" style="float: left">Customers</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">Create New Customer</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="#" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            {% csrf_token %}
+                            <input type="text" class="form-control customer_name" name="name" placeholder="Customer Name"><br>
+                            <input type="text" class="form-control bhatta_name" name="bhatta_name" autocomplete="off" placeholder="Select Bhatta" list="bhatta_list">
+                            <datalist id="bhatta_list">
+                                {% for bhatta in bhatta_list %}
+                                    <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <input type="text" class="form-control mobile_no" name="mobile_no" placeholder="Customer Mobile No."><br>
+                            <input type="text" class=" form-control customer_type" name="customer_type" autocomplete="off" placeholder="Select Customer Type" list="customer_type_list">
+                            <datalist id="customer_type_list">
+                                {% for cust_type in customer_types %}
+                                    <option value="{{ cust_type.0 }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+
+                            <label class="form-control-label" name="customer_status">Select Status Type<span style="color:red">*</span></label>
+                            <select class="form-control" name="customer_status">
+                                <option value="Activate">Activate</option>
+                                <option value="Deactivate">Deactivate</option>
+                            </select>
+                            <br>
+
+                            <textarea name="address" class="form-control address" placeholder="Customer Address (Optional)"></textarea><br>
+
+                            <button type="submit" class="btn btn-primary product-sub-btn" style="float: right">Save Customer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

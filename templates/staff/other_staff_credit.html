@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block menu_staff %}active{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'staff:details_other' pk=staff.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a> &nbsp;
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">{{ staff.name }} ({{ staff.designation }}) | <small>Credit</small></h3>
+            <div class="panel-body">
+                <form class="form-horizontal new_ledger" action="{% url 'staff:credit_other' pk=staff.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label>Season</label>
+                            <input type="text" class="form-control season_name" name="season_name" autocomplete="off" placeholder="Select Season" list="season_list">
+                            <datalist id="season_list">
+                                {% for season in seasons %}
+                                    <option value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist><br>
+                            <label>Page No.</label>
+                            <input type="text" class="form-control page_no" name="page_no" placeholder="Page #"><br>
+                            <label>Details</label>
+                            <textarea maxlength="500" rows="1" name="details" class="form-control details"  placeholder ="Details"></textarea> <br>
+                            <label>Date</label>
+                            <input type="date" class="form-control date_added" name="date_added"><br>
+                            <input type="hidden" name="staff" value="{{ staff.id }}">
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <label>Total Loads</label>
+                            <input type="number" class="form-control total_load" name="total_load" placeholder="Total Loads" value="0"><br>
+                            <label>Rate</label>
+                            <input type="number" class="form-control rate" name="rate" placeholder="Rate" value="0"><br>
+                            <label>Total Amount</label>
+                            <input type="number" class="form-control total_payment" name="total_payment" placeholder="Total Amount" value="0"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Credit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+    $('.total_load').on('change', function () {
+            $('.total_payment').val(($(this).val() / 1) * $('.rate').val());
+            if ($('.total_payment').val() ==  0 ) {
+                $('.total_payment').val(0);
+            }
+        });
+        $('.rate').on('change', function () {
+            $('.total_payment').val($(this).val() * ($('.total_load').val() / 1));
+            if ($('.total_payment').val() ==  0 ) {
+                $('.total_payment').val(0);
+            }
+        });
+    </script>
+{% endblock %}

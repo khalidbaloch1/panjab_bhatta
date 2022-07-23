@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block menu_staff %}{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <br>
+        <a href="#"><button type="button" class="btn btn-primary" style="float: left">All Staffs</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">{{ object.name }} ({{ object.designation }})</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'staff:update' pk=object.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label><strong>Name</strong></label>
+                            <input type="text" class="form-control name" name="name" placeholder="Staff Name" value="{{ object.name }}"><br>
+                            <label><strong>Bhatta</strong></label>
+                            <input type="text" class="form-control bhatta_name" name="bhatta_name" placeholder="Select Bhatta" autocomplete="off" list="bhatta_list" value="{{ object.bhatta.name }}">
+                            <datalist id="bhatta_list">
+                                {% for bhatta in bhattas %}
+                                    <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Staff Type</strong></label>
+                            <input type="text" class="form-control staff_type"  autocomplete="off" name="staff_type" placeholder="Select type" list="staff_type_list" value="{{ object.staff_type }}">
+                            <datalist id="staff_type_list">
+                                <option value="{{ staff_model.STAFF_SALARY }}"></option>
+                                <option value="{{ staff_model.STAFF_WEEKLY }}"></option>
+                                <option value="{{ staff_model.STAFF_OTHER }}"></option>
+                                <option value="{{ staff_model.STAFF_PETROLEUM }}"></option>
+                                <option value="{{ staff_model.STAFF_MULTIPLE }}"></option>
+                            </datalist>
+                            <br>
+                            <label><strong>Staff Payment Type</strong></label>
+                                    <input type="text" class="form-control staff_payment_action"  autocomplete="off" name="staff_payment_action" placeholder="Select type" list="staff_payment_action_list" value="{{ object.staff_payment_action }}">
+                                    <datalist id="staff_payment_action_list">
+                                        <option value="{{ staff_model.TYPE_JAMAH }}"></option>
+                                        <option value="{{ staff_model.TYPE_BANAM }}"></option>
+                                    </datalist>
+                                <br>
+
+                            <label><strong>Designation</strong></label>
+                            <input type="text" class="form-control designation" name="designation" placeholder="Designation" value="{{ object.designation }}"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <label><strong>Rate</strong></label>
+                            <input type="text" class="form-control rate" name="rate" placeholder="Rate" value="{{ object.rate }}"><br>
+                            <label><strong>Mobile</strong></label>
+                            <input type="text" class="form-control mobile_no" name="mobile_no" placeholder="Mobile No" value="{{ object.mobile_no }}"><br>
+                            <label><strong>Joining Date</strong></label>
+                            <input type="date" class="form-control joining_date" name="joining_date" value="{{ object.joining_date|date:"Y-m-d" }}"><br>
+                            <label><strong>Leaving Date</strong></label>
+                            <input type="date" class="form-control leaving_date" name="leaving_date" value="{{ object.leaving_date|date:"Y-m-d" }}"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Update Staff</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

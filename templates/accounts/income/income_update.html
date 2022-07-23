@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block menu_account %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <br>
+        <a href="{% url 'account:income_details' income_account_id=object.account.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center"><b>{{ object.account.name|title }} |</b> <small style="color: LightBlue !important; font-family: italian;"><b>Jamah & Banam Amount Update Statement</b></small></h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'account:income_update' pk=object.id %}" method="post" autocomplete="off">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            {% csrf_token %}
+                            <label class="form-control-label" name="bhatta">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta">
+                                {% for bhatta in bhatta %}
+                                <option value="{{ bhatta.id }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+
+                            <label class="form-control-label" name="season">Season<span style="color:red">*</span></label>
+                            <select class="form-control" name="season">
+                                {% for season in seasons %}
+                                <option value="{{ season.id }}">{{ season.season_year }}</option>
+                                {% endfor %}
+                            </select><br>
+
+                            <label class="form-control-label" name="income_payment_type">Ledger Book<span style="color:red">*</span></label>
+                            <select class="form-control" name="income_payment_type">
+                                <option value="Credit Ledger Book">Credit Ledger Book</option>
+                            </select><br>
+
+                            <label><strong>Amount</strong></label>
+                            <input type="number" class="form-control income_credit_amount" name="income_credit_amount" value="{{ object.income_credit_amount|floatformat:'-3' }}"><br>
+
+                            <label><strong>Amount</strong></label>
+                            <input type="number" class="form-control income_debit_amount" name="income_debit_amount" value="{{ object.income_debit_amount|floatformat:'-3' }}"><br>
+
+                            <label><strong>Date</strong></label>
+                            <input type="date" class="form-control income_date" name="income_date" value="{{ object.income_date|date:'Y-m-d' }}"><br>
+
+                            <textarea maxlength="500" rows="4" name="income_details" class="form-control income_details"  placeholder ="Please Add Details">{{ object.income_details}}</textarea> <br>
+
+
+                            <input type="hidden" name="account" value="{{ object.account.id }}">
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

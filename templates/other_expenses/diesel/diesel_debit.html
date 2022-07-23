@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block menu_other_expenses %}active{% endblock %}
+{% block sub_menu_all_expenses %}active{% endblock %}
+{% block content %}
+    <div class="col-md-6">
+        <br>
+        <a href="#"><button type="button" class="btn btn-primary" style="float: left">Back</button></a> &nbsp;
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">{{ other_expense.name }} | <small>Debit Amount</small></h3>
+            <div class="panel-body">
+                <form class="form-horizontal new_ledger" action="{% url 'other_expense:debit' pk=other_expense.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            {% csrf_token %}
+                            <input type="text" class="form-control diesel_debit_amount" name="diesel_debit_amount" placeholder="Amount"><br>
+                            <textarea maxlength="500" rows="4" name="diesel_details" class="form-control diesel_details"  placeholder ="Details"></textarea> <br>
+                            <input type="date" class="form-control diesel_date" name="diesel_date"><br>
+                            <label class="form-control-label" name="diesel_payment_type">Ledger Book<span style="color:red">*</span></label>
+                            <select class="form-control" name="diesel_payment_type">
+                                <option value="Debit Ledger Book">Debit Ledger Book</option>
+                            </select>
+                            <br>
+                            <input type="hidden" name="other_expense" value="{{ other_expense.id }}">
+                            <button type="submit" class="btn btn-primary ledger-submit-btn" style="float: right">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block menu_income %}active{% endblock %}
+{% block sub_menu_income_list %}active{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10">
+                <br>
+                <a href="{% url 'expense:create_income' %}"><button type="button" class="btn btn-primary">Add Income</button></a>
+                <br><br>
+                <div class="content-panel table-responsive">
+                    <h2 class="text-center">Seasonal Income</a></h2>
+                    <div class="print-show-options" style="display:ruby-text-container; color: teal">
+                        {% if season_kw %}
+                            <h3 class="text-center">Season: {{ season_kw }}</h3>
+                        {% endif %}
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group custom-search-form col-md-12" style="left: 5px">
+                                <input type="text" class="form-control search-invoice" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="season_filter">
+                                <option>All Seasons</option>
+                                {% for season in seasons %}
+                                    <option>{{ season.season_year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+{#                    <div style="float: right; padding: 12px;">#}
+{#                        <strong>Total Bricks:</strong> <span style="color: red">{{ total_quantity|floatformat:'-2' }}</span>&nbsp;&nbsp;&nbsp;#}
+{#                        <strong>Grand Total:</strong> <span style="color: red">{{ grand_total|floatformat:'-2' }}</span>#}
+{#                    </div>#}
+                    <hr>
+                    <table class="table table-striped table-advance table-hover table-bordered incoices-table">
+                        <thead style="background-color: teal;">
+                        <tr style="color: white">
+                            <th><i class=" fa fa-edit"></i> Item</th>
+                            <th><i class=" fa fa-edit"></i> Availability</th>
+                            <th><i class="fa fa-bullhorn"></i> Quantity</th>
+                            <th><i class="fa fa-bullhorn"></i> Estimated Price</th>
+                            <th><i class="fa fa-bullhorn"></i> Total Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="invoices-table-body">
+                        {% if not object_list %}
+                            <tr><td colspan="11" class="text-center">Record Not Found</td></tr>
+                        {% endif %}
+                        {% for income in object_list %}
+                            <tr style="color: black; font-weight: bold">
+                                <td>{{ income.stock.item_name|title }}</td>
+                                <td>{{ income.availability_type }}</td>
+                                <td>{{ income.stock_quantity|floatformat:'-2' }}</td>
+                                <td>{{ income.estimate_price|floatformat:'-2' }}</td>
+                                <td>{{ income.total_amount|floatformat:'-2' }}</td>
+                                <td>
+                                    <a href="{% url 'expense:delete_income' pk=income.id %}"><button class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function(){
+            $(".search-invoice").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".invoices-table-body tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            var income_url = '{% url "expense:income_list" %}';
+            $('#season_filter').on('change', function () {
+                if ($(this).val() == 'All Seasons') {
+                    window.location.href = income_url
+                } else {
+                    window.location.href = income_url + $(this).val() + '/';
+                }
+            });
+            $('#season_filter option:contains("{{ season_kw }}")').prop('selected',true);
+
+        });
+    </script>
+{% endblock %}

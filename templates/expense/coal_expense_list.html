@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block menu_coal_details %}active{% endblock %}
+{% block sub_menu_coal_reports %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <br>
+                <button type="button" class="btn btn-primary print-invoice-btn" onclick="PrintInvoice('print-invoices')" style="float: left">Print Reports</button>&nbsp;&nbsp;
+                <a href="{% url 'expense:coal_create' %}"><button type="button" class="btn btn-primary">New Koyla Expense</button></a>
+                <br><br>
+                <div class="content-panel table-responsive print-invoices" id="print-invoices">
+                    <h2 class="text-center">Koyla Reports</h2>
+                    <div class="print-show-options" style="display:none">
+                        {% if bhatta_kw %}
+                            <h3 class="text-center">Bhatta: {{ bhatta_kw }} | Season: {{ season_kw }}</h3>
+                        {% endif %}
+                    </div>
+                    <br>
+                    <div class="row remove-print-display">
+                        <div class="col-lg-6">
+                            <div class="input-group custom-search-form col-md-12" style="left: 5px">
+                                <input type="text" class="form-control search-reports" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="season_filter">
+                                <option>All Seasons</option>
+                                {% for season in seasons %}
+                                    <option>{{ season.season_year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div style="float: right; padding: 12px">
+                        <strong><a href="#">Total Koyla Ton:</a><span style="color: #C9312C !important;">{{ total_carriage|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                        <strong><a href="#">Total Kiraya: </a><span style="color: #C9312C !important;">{{ total_kiraya|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                        <strong><a href="#">Total Koyla Amount: </a><span style="color: #C9312C !important;">{{ total_amount|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                        <strong><a href="#">Grand Total: </a><span style="color: #C9312C !important;">{{ grand_total|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <hr>
+                    <table class="table table-striped table-advance table-hover reports table table-bordered incoices-table table-responsive">
+                        <thead style="background-color: teal !important;">
+                        <tr style="color: white">
+                            <th>S.No</th>
+                            <th>Owner</th>
+                            <th>Date</th>
+                            {#<th>City</th>#}
+                            <th>Season</th>
+                            <th>Gadi No</th>
+                            <th>Koyla Ton</th>
+                            <th>Per Ton Amount</th>
+                            <th>Jamah Gadi Kiraya</th>
+                            <th>Wasol Gadi Kiraya</th>
+                            <th>Koyla Amount</th>
+                            <th>Total</th>
+                            <th class="remove-print-display">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="reports-table-body">
+                        {% if not object_list %}
+                            <tr><td colspan="12" class="text-center">Record Not Found</td></tr>
+                        {% endif %}
+                        {% for coal_report in object_list %}
+                            <tr style="color: black; font-weight: bold">
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="#">{{ coal_report.owner|title }}</a></td>
+                                <td>{{ coal_report.added_date|date:'d/m/y' }}</td>
+                                {#<td>{{ coal_report.city|title }}</td>#}
+                                <td>{{ coal_report.season }}</td>
+                                <td>{{ coal_report.transport }}</td>
+                                <td>{{ coal_report.carriage|floatformat:'-2' }}</td>
+                                <td>{{ coal_report.amount_per_carriage|floatformat:'-2' }}</td>
+                                <td>{{ coal_report.total_payment|floatformat:'-2' }}</td>
+                                <td>{{ coal_report.received_amount|floatformat:'-2' }}</td>
+                                <td>{{ coal_report.amount|floatformat:'-2' }}</td>
+                                <td><span style="color: #C9312C !important;">{{ coal_report.total_amount|floatformat:'-2' }}</span></td>
+                                <td class="remove-print-display">
+                                    <a href="{% url 'expense:coal_update' pk=coal_report.id %}"><button class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button></a>
+                                    <a href="{% url 'expense:coal_delete' pk=coal_report.id %}"><button class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function(){
+            $(".search-reports").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".reports-table-body tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            var coal_reports_url = '{% url "expense:coal_list" %}';
+            $('#season_filter').on('change', function () {
+                if ($(this).val() == 'All Seasons') {
+                    window.location.href = coal_reports_url
+                } else {
+                    window.location.href = coal_reports_url + $(this).val() + '/';
+                }
+            });
+            $('#season_filter option:contains("{{ season_kw }}")').prop('selected',true);
+
+        });
+        function PrintInvoice(divName){
+             var printContents = document.getElementById(divName).innerHTML;
+             var originalContents = document.body.innerHTML;
+             document.body.innerHTML = printContents;
+             $('table').removeClass('table-bordered');
+             $('tr').css('border', '1px solid');
+             $('td').css('border', '1px solid');
+             $('th').css('border', '1px solid');
+             $('.remove-print-display').hide();
+             $('.print-show-options').show();
+             window.print();
+             document.body.innerHTML = originalContents;
+             $('.remove-print-display').show();
+             $('.print-show-options').hide();
+        }
+    </script>
+{% endblock %}

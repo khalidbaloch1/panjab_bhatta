@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block menu_other_expenses %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'other_expense:mitti_details' pk=object.other_expense.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center"><b>{{ object.other_expense.name|title }} |</b> <small style="color: LightBlue !important; font-family: italian;"><b>Jamah & Banam Amount Update Statement</b></small></h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'other_expense:mitti_update' pk=object.id %}" method="post" autocomplete="off">
+                    <div class="form-group">
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label class="form-control-label" name="bhatta_name">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta_name">
+                                {% for bhatta in bhattas %}
+                                <option value="{{ bhatta.name }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+                            <label><strong>Date</strong></label>
+                            <input type="date" class="form-control mitti_date" name="mitti_date" value="{{ object.mitti_date|date:'Y-m-d' }}"><br>
+                            <textarea maxlength="500" rows="4" name="mitti_details" class="form-control mitti_details"  placeholder ="Details">{{ object.mitti_details}}</textarea> <br>
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <div class="col-lg-12">
+                                <label class="form-control-label" name="season_name">Season<span style="color:red">*</span></label>
+                                <select class="form-control" name="season_name">
+                                    {% for season in seasons %}
+                                    <option value="{{ season.season_year }}">{{ season.season_year }}</option>
+                                    {% endfor %}
+                                </select><br>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong>Take Amount</strong></label>
+                                <input type="number" class="form-control mitti_debit_amount" name="mitti_debit_amount" placeholder="Add Load" value="{{ object.mitti_debit_amount|floatformat:'-3' }}"><br>
+                            </div>
+                            <div class="col-lg-6">
+                                <label><strong>Total / Load</strong></label>
+                                <input type="number" class="form-control total_load" name="total_load" placeholder="Add Load" value="{{ object.total_load|floatformat:'-3' }}"><br>
+                            </div>
+                            <div class="col-lg-6">
+                                <label><strong>Amount Per / Load</strong></label>
+                                <input type="text" class="form-control amount_per_load" name="amount_per_load" value="{{ object.amount_per_load|floatformat:'-3' }}"><br>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong>Total Amount</strong></label>
+                                <input type="number" class="form-control total_amount" name="total_amount" readonly value="{{ object.total_amount|floatformat:'-3' }}"><br>
+                                <input type="hidden" name="other_expense" value="{{ object.other_expense.id }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+        <script>
+        $('.amount_per_load').on('change', function () {
+            $('.total_amount').val(parseFloat($(this).val()) * parseFloat($('.total_load').val()));
+            if ($('.total_amount').val() ==  0 ) {
+            }
+        });
+
+    </script>
+{% endblock %}

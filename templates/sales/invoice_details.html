@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block menu_sales %}active{% endblock %}
+{% block sub_menu_invoices %}active{% endblock %}
+
+{% block content %}
+    <style>
+        .item-row th {
+            background: #eee;
+        }
+    </style>
+
+    <div class="col-lg-10 col-md-10 col-sm-10">
+        <br>
+        <button type="button" class="btn btn-primary print-invoice-btn" onclick="PrintInvoice('print-invoice')" style="float: left">Print Invoice</button>&nbsp;&nbsp;
+        <a href="{% url 'sales:create_invoice' %}"><button type="button" class="btn btn-primary">New Invoice</button></a>
+        <br><br><br>
+        <div class="content-panel print-invoice" id="print-invoice" style="padding: 5px">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="text-center">
+{#                        <h1><strong>{{ request.user.retailer_user.retailer.name }}</strong></h1>#}
+{#                        {% if request.user.user_profile.address %}<span><strong>{{ request.user.user_profile.address }}</strong></span><br>{% endif %}#}
+{#                        {% if request.user.user_profile.phone_no %}<small><strong>Phone No:</strong> {{ request.user.user_profile.phone_no }} </small>{% endif %} {% if request.user.user_profile.mobile_no %}<small><strong>Mobile No: </strong>{{ request.user.user_profile.mobile_no }} </small>{% endif %}#}
+                        <h3>Invoice</h3>
+                    </div>
+                    <hr>
+                </div>
+                <div class="col-xs-12 col-md-12" style="margin-top: 15px">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <label><strong>Customer:</strong></label> <span style="margin: 15px;">{{ invoice.customer.name }}</span><br>
+                            <label><strong>Bhatta:</strong></label> <span style="margin: 15px;">{{ invoice.bhatta.name }}</span><br>
+                            <label><strong>Season:</strong></label> <span style="margin: 15px;">{{ invoice.season.season_year }}</span><br>
+                            <br>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <label><strong>Challan No:</strong></label> <span style="margin: 15px;">{{ invoice.challan_no }}</span><br>
+                            <label><strong>Transport:</strong></label> <span style="margin: 15px;">{{ invoice.transport }}</span><br>
+                            <label><strong>Invoice Date:</strong></label> <span style="margin: 15px;">{{ invoice.invoice_date }}</span><br>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="float: right; font-size: large">Invoice No. <span style="color:red">{{ invoice.id|stringformat:"04d" }}</span></span>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr class="item-row">
+                                <th>Item</th>
+                                <th>Bhatta</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in  invoice.purchased_stock.all %}
+                                <tr id="hiderow">
+                                    <td>
+                                        {{ item.stock.item_name }}
+                                    </td>
+                                    <td>
+                                        {{ item.stock.bhatta.name }}
+                                    </td>
+                                    <td>
+                                        {{ item.price|floatformat:-3}}
+                                    </td>
+                                    <td>
+                                        {{ item.quantity|floatformat:-3}}
+                                    </td>
+                                    <td>
+                                        {{ item.total_amount|floatformat:-3 }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr style="border-top: 3px solid">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><strong>Sub Total</strong></td>
+                                <td><span id="subtotal">{{ invoice.sub_total|floatformat:-3 }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Quantity: </strong><span id="totalQty" style="color: red; font-weight: bold">{{ invoice.total_quantity }}</span> Units</td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><strong>Discount</strong></td>
+                                <td>{{ invoice.discount|floatformat:-3 }}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><strong>Shipping</strong></td>
+                                <td>{{ invoice.shipping|floatformat:-3 }}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><strong>Grand Total</strong></td>
+                                <td><span id="grandTotal" style="color: red;">{{ invoice.grand_total|floatformat:-3 }}</span></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><strong>Received Amount</strong></td>
+                                <td><span id="receivedAmount">{{ invoice.paid_amount|floatformat:-3 }}</span></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right"><strong>Remaining Payment</strong></td>
+                                <td><span id="remainingAmount">{{ invoice.remaining_payment|floatformat:-3 }}</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-md-3">
+                </div>
+                <div class="col-xs-3 col-md-3">
+                </div>
+                <div class="col-xs-3 col-md-3">
+                </div>
+                <div class="col-xs-3 col-md-3" style="text-align: center;">
+                    <br><br><br>
+                    <hr>
+                    <span>Signature</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function PrintInvoice(divName){
+             var printContents = document.getElementById(divName).innerHTML;
+             var originalContents = document.body.innerHTML;
+             document.body.innerHTML = printContents;
+             $('table').removeClass('table-bordered');
+             $('tr').css('border', '1px solid');
+             $('td').css('border', '1px solid');
+             $('th').css('border', '1px solid');
+             window.print();
+             document.body.innerHTML = originalContents;
+        }
+    </script>
+{% endblock %}

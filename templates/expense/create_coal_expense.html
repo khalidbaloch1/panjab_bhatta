@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block menu_coal_details %}active{% endblock %}
+{% block sub_menu_create_coal_expense %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'expense:coal_list' %}"><button type="button" class="btn btn-primary" style="float: left">Koyla Reports</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">New Koyla Expense</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'expense:coal_create' %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label><strong>Owner</strong></label>
+                            <input type="text" class="form-control owner" name="owner" placeholder="Owner Name"><br>
+                            <label><strong>Date</strong></label>
+                            <input type="date" class="form-control added_date" name="added_date"><br>
+                            <label><strong>Bhatta</strong></label>
+                            <input type="text" class="form-control bhatta_name" name="bhatta_name" autocomplete="off" placeholder="Select Bhatta" list="bhatta_list">
+                            <datalist id="bhatta_list">
+                                {% for bhatta in bhattas %}
+                                    <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Season</strong></label>
+                            <input type="text" class="form-control season_year" name="season_year" autocomplete="off" placeholder="Select Season" list="season_list">
+                            <datalist id="season_list">
+                                {% for season in seasons %}
+                                    <option value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Gadi No</strong></label>
+                            <input type="text" class="form-control transport" name="transport" placeholder="Transport No"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <div class="col-lg-6">
+                                <label><strong>Total Ton</strong></label>
+                                <input type="text" class="form-control carriage" name="carriage" placeholder="Carriage"><br>
+                            </div>
+                            <div class="col-lg-6">
+                                <label><strong>Amount Per Ton</strong></label>
+                                <input type="text" class="form-control amount_per_carriage" name="amount_per_carriage" value=""><br>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong>Jamah Gadi Kiraya</strong></label>
+                                <input type="number" class="form-control total_payment" name="total_payment" value=""><br>
+                                <label><strong>Wasol Gadi Kiraya</strong></label>
+                                <input type="number" class="form-control received_amount" name="received_amount" value=""><br>
+                                <label><strong>Amount</strong></label>
+                                <input type="number" class="form-control amount" name="amount" value="0"><br>
+                                <label><strong>Total Amount</strong></label>
+                                <input type="number" class="form-control total_amount" name="total_amount" value="0" readonly><br>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Save Koyla</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+        <script>
+        $('.total_payment').on('change', function () {
+            $('.total_amount').val(parseFloat($(this).val()) + parseFloat($('.amount').val()));
+            if ($('.total_amount').val() ==  0 ) {
+                $('.total_amount').val('');
+            }
+        });
+        $('.amount').on('change', function () {
+            $('.total_amount').val(parseFloat($(this).val()) + parseFloat($('.total_payment').val()));
+            if ($('.total_amount').val() ==  0 ) {
+                $('.total_amount').val('');
+            }
+        });
+
+        $('.amount_per_carriage').on('change', function () {
+            $('.amount').val(parseFloat($(this).val()) * parseFloat($('.carriage').val()));
+            $('.total_amount').val(parseFloat($('.amount').val()) + parseFloat($('.total_payment').val()));
+            if ($('.total_amount').val() ==  0 ) {
+                $('.total_amount').val('');
+            }
+        });
+
+    </script>
+{% endblock %}

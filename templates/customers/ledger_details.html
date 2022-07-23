@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block menu_customers %}active{% endblock %}
+{% block sub_menu_all_customer %}active{% endblock %}
+
+{% block content %}
+    <br>
+    {#<a href="#AddBanamLedger" class="btn btn-success" data-toggle="modal"><i class="material-icons"></i> <span>Add Banam (Payment)</span></a>#}
+    <a href="{% url 'customer:add_ledger' pk=customer.id %}"><button type="button" class="btn btn-success" style="float: left">Add Banam (Payment)</button></a> &nbsp;
+    <a href="#AddJamahpayment" class="btn btn-warning" data-toggle="modal"><i class="material-icons"></i> <span>Add Jamah (Payment)</span></a>
+    {#<a href="{% url 'customer:payment_ledger' pk=customer.id %}"><button type="button" class="btn btn-danger">Jamah</button></a>#}
+    <br><br><br>
+
+    <!-- Success Alert  Messages customer Take-->
+    {% for msg in messages %}
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+          <strong>Hey!</strong> {{msg}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    {% endfor %}
+    <!-- end -->
+
+    <div class="content-panel">
+        <h2 class="text-center">{{ customer.name }} <small>Khata Details</small></h2>
+        <div class="well"><strong>Remaining Payments:</strong> {{ remaining_amount|floatformat:-2 }}</div>
+        {% if customer_ledgers %}
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                   Credit Amount Details
+                </div>
+                <div class="panel-body table-responsive">
+                    <table class="table table-striped table-advance table-hover ledger-table table-responsive">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-bullhorn"></i> Amount </th>
+                                <th><i class="fa fa-question-circle"></i> Details</th>
+                                <th><i class="fa fa-bookmark"></i> Date</th>
+                                <th><i class="fa fa-bookmark"></i> Ledger Types</th>
+                            </tr>
+                        </thead>
+                        <tbody class="item-table-body">
+                            {% for ledger in customer_ledgers %}
+                                <tr>
+                                    <td>{{ ledger.amount|floatformat:"-2"}}</td>
+                                    <td>{{ ledger.details }}</td>
+                                    <td>{{ ledger.date_added }}</td>
+                                    <td>{{ ledger.ledger_type }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    Total Ledger: {{ ledger_amount|floatformat:-2 }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if customer_ledger_payments %}
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                   Debit Details
+                </div>
+                <div class="panel-body table-responsive">
+                    <table class="table table-striped table-advance table-hover payment-table table-responsive">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-bullhorn"></i> Amount</th>
+                                <th><i class="fa fa-question-circle"></i> detail</th>
+                                <th><i class="fa fa-bookmark"></i> Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="item-table-body">
+                            {% for payment in customer_ledger_payments %}
+                                <tr>
+                                    <td>{{ payment.amount|floatformat:-2}}</td>
+                                    <td>{{ payment.details }}</td>
+                                    <td>{{ payment.payment_date }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    Total Payments: {{ payment_amount|floatformat:-2 }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+<!-- Add Banam (Ledger) Modal HTML -->
+	<!--<div id="AddBanamLedger" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'customer:add_ledger' pk=customer.id %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="customer" value="{{ customer.id }}">
+					<div class="modal-header">
+						<h3 class="text-center"><b>{{ customer.name|title }} |</b> <small><b>Banam Amount</b></small></h3>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Banam Amount <span style="color:red">*</span></label>
+                            <input type="number" class="form-control form-control-alternative" name="amount" placeholder="Banam Amount" required>
+                        </div>
+
+                        <input type="text" class=" form-control ledger_type" name="ledger_type" autocomplete="off" placeholder="Select Customer Type" list="ledger_type_list">
+                            <datalist id="ledger_type_list">
+                                {% for ledger_type in ledger_types %}
+                                    <option value="{{ ledger_type.0 }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Details <span style="color:red"></span></label>
+                            <textarea type="text" name="details" class="form-control form-control-alternative" placeholder="Please Add Details"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Date <span style="color:red">*</span></label>
+                            <input type="date" name="date_added" class="form-control" required>
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div> -->
+
+<!-- Add  Give (Payment) Modal HTML -->
+	<div id="AddJamahpayment" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'customer:payment_ledger' pk=customer.id %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="customer" value="{{ customer.id }}">
+					<div class="modal-header">
+						<h3 class="text-center"><b>{{ customer.name|title }} |</b> <small><b>Jamah Amount</b></small></h3>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Jamah Amount <span style="color:red">*</span></label>
+                            <input type="number" name="amount" class="form-control form-control-alternative" placeholder="Jamah Amount" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Payment Type <span style="color:red"></span></label>
+                            <input type="text" class="form-control form-control-alternative" name="payment_type" placeholder="Payment Type (Optional) .e.g. Cash, Khata or etc">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Details <span style="color:red"></span></label>
+                            <textarea type="text" name="details" class="form-control form-control-alternative" placeholder="Please Add Details"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Date <span style="color:red">*</span></label>
+                            <input type="date" name="payment_date" class="form-control" required>
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

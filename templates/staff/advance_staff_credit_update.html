@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block menu_staff %}active{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'staff:details_advance' pk=object.staff.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a> &nbsp;
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">{{ object.staff.name }} ({{ object.staff.designation }}) | <small>Credit</small></h3>
+            <div class="panel-body">
+                <form class="form-horizontal new_ledger" action="{% url 'staff:update_advance' pk=object.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            {% csrf_token %}
+                            <label>Season</label>
+                            <input type="text" class="form-control season_name" name="season_name" autocomplete="off" placeholder="Select Season" list="season_list" value="{{ object.season.season_year }}">
+                            <datalist id="season_list">
+                                {% for season in seasons %}
+                                    <option value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist><br>
+                            <label>Page No.</label>
+                            <input type="text" class="form-control page_no" name="page_no" placeholder="Page #" value="{{ object.page_no }}"><br>
+                            <label>Details</label>
+                            <textarea maxlength="500" rows="1" name="details" class="form-control details"  placeholder ="Details">{{ object.details }}</textarea> <br>
+                            <label>Date</label>
+                            <input type="date" class="form-control date_added" name="date_added" value="{{ object.date_added|date:'Y-m-d' }}"><br>
+                            <input type="hidden" name="staff" value="{{ object.staff.id }}">
+                        </div>
+                        <div class="col-sm-12 col-lg-6 col-md-12">
+                            <label>Total Bricks</label>
+                            <input type="number" class="form-control total_bricks" name="total_bricks" placeholder="Total Bricks" value="{{ object.total_bricks|floatformat:'-3' }}"><br>
+                            <label>Kharcha Rate</label>
+                            <input type="number" class="form-control kharcha_rate" name="kharcha_rate" placeholder="Kharcha Rate" value="{{ object.kharcha_rate|floatformat:'-3' }}"><br>
+                            <label>Weekly Kharcha</label>
+                            <input type="number" class="form-control weekly_amount" name="weekly_amount" placeholder="Weekly Amount" value="{{ object.weekly_amount|floatformat:'-3' }}"><br>
+                            <label>Net Amount</label>
+                            <input type="number" class="form-control net_payment" name="net_payment" placeholder="Net Amount" value="{{ object.net_payment|floatformat:'-3' }}"><br>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Credit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $('.total_bricks').on('change', function () {
+            $('.net_payment').val(($(this).val() / 1000) * $('.kharcha_rate').val());
+            if ($('.net_payment').val() ==  0 ) {
+                $('.net_payment').val(0);
+            }
+        });
+        $('.kharcha_rate').on('change', function () {
+            $('.net_payment').val($(this).val() * ($('.total_bricks').val() / 1000));
+            if ($('.net_payment').val() ==  0 ) {
+                $('.net_payment').val(0);
+            }
+        });
+    </script>
+{% endblock %}

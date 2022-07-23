@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block menu_other_expenses %}active{% endblock %}
+{% block sub_menu_all_expenses %}active{% endblock %}
+{% block content %}
+
+    <div class="col-md-12">
+        <br>
+        <a href="{% url 'other_expense:diesel_details' pk=other_expense.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h2 class="text-center"><a href="#">{{ other_expense.name|title }}</a></h2>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'other_expense:credit' pk=other_expense.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            {% csrf_token %}
+                            <label class="form-control-label" name="bhatta">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta">
+                                {% for bhatta in bhatta %}
+                                <option value="{{ bhatta.id }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+
+                            <label><strong>Date</strong></label>
+                            <input type="date" class="form-control diesel_date" name="diesel_date"><br>
+                            <textarea maxlength="500" rows="4" name="diesel_details" class="form-control diesel_details"  placeholder ="Details"></textarea> <br>
+                        </div>
+
+                        <div class="col-md-4">
+                                <label class="form-control-label" name="season">Season<span style="color:red">*</span></label>
+                                <select class="form-control" name="season">
+                                    {% for season in seasons %}
+                                    <option value="{{ season.id }}">{{ season.season_year }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+
+                        <div class="col-md-4">
+                        <label class="form-control-label" name="diesel_payment_type">Ledger Book<span style="color:red">*</span></label>
+                            <select class="form-control" name="diesel_payment_type">
+                                <option value="Credit Ledger Book">Credit Ledger Book</option>
+                            </select><br>
+                        </div>
+
+                            <div class="col-lg-4">
+                                <label><strong>Total / LTR</strong></label>
+                                <input type="text" class="form-control ltr" name="ltr" placeholder="Total / LTR"><br>
+                            </div><br>
+
+                            <div class="col-lg-4">
+                                <label><strong>Amount Per / LTR</strong></label>
+                                <input type="text" class="form-control amount_per_ltr" name="amount_per_ltr" value="0"><br>
+                            </div>
+
+                            <div class="col-lg-8">
+                                <label><strong>Total Amount</strong></label>
+                                <input type="number" class="form-control total_amount" name="total_amount" value="0"><br>
+                                <input type="hidden" name="other_expense" value="{{ other_expense.id }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Save</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+        <script>
+        $('.amount_per_ltr').on('change', function () {
+            $('.total_amount').val(parseFloat($(this).val()) * parseFloat($('.ltr').val()));
+            if ($('.total_amount').val() ==  0 ) {
+            }
+        });
+
+    </script>
+{% endblock %}

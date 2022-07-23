@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block menu_other_expenses %}active{% endblock %}
+{% block sub_menu_all_expenses %}active{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+            <br>
+            <a href="{% url 'customer:list' %}"><button type="button" class="btn btn-primary" style="float: left"> Customers </button></a>
+            <button type="button" class="btn btn-primary print" onclick="PrintInvoice('print-invoice')" style="margin-left: 10px"> Print </button>
+            <br><br><br>
+            <div class="content-panel table-responsive">
+                <table class="table table-striped table-advance table-hover invoices-table table-bordered table-responsive">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="col-lg-2 remove-print-display">
+                                <label><strong><span style="color: black">Start Date:</span></strong></label>
+                                <input type="date" class="form-control start_date" id="start_date" value="{{ start_date }}">
+                            </div>
+                            <div class="col-lg-2 remove-print-display">
+                                <label><strong><span style="color: black">End Date:</span></strong></label>
+                                <input type="date" class="form-control end_date" id="end_date" value="{{ end_date }}">
+                            </div>
+                            <div class="col-lg-2 remove-print-display">
+                                <label><strong>&nbsp;</strong></label><br>
+                                <button class="btn btn-primary filter-btn">Filter</button>
+                            </div>
+                        </div>
+                        <br><br><br><br>
+                        <h3 class="text-center"><b>{{ other_expense.name|title }} |</b> <small style="color: LightBlue !important; font-family: italian;"><b>Diesel Ledger Statement</b></small></h3>
+                    <table class="table table-bordered">
+                    <thead style="background-color: teal;">
+                    <tr style="color: white">
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Amount Per Leter</th>
+                        <th class="text-center">Total / LTR</th>
+                        <th class="text-center">Total / Amount</th>
+                        <th class="text-center">Banam / Amount</th>
+                        <th class="text-center">Details</th>
+                    </tr>
+                    </thead>
+                    <tbody class="invoices-table-body">
+                        {% for diesel in diesel %}
+                        <tr>
+                            <td class="text-center">{{diesel.diesel_date}}</td>
+                            <td class="text-center">{{diesel.amount_per_ltr|floatformat:-2 }}</td>
+                            <td class="text-center">{{diesel.ltr|floatformat:-2 }}</td>
+                            <td class="text-center">{{diesel.total_amount|floatformat:-2}}</td>
+                            <td class="text-center">{{diesel.diesel_debit_amount|floatformat:-2 }}</td>
+                            <td class="text-center">{{diesel.diesel_details}}</td>
+                        </tr>
+                     {% endfor %}
+                </tbody>
+                </table>
+            <div class=" text-right">
+                 <label><strong><span style="color: black">Total Later:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ ltr|floatformat:'-2' }}</span></span><br>
+                 <label><strong><span style="color: black">Total Amount:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ total_amount|floatformat:'-2' }}</span></span><br>
+                 <label><strong><span style="color: black">Paid Amount:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ diesel_debit_amount|floatformat:'-2' }}</span></span><br>
+                 <label><strong><span style="color: black">Remaining Balance:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ remaining_amount|floatformat:'-2' }}</span></span><br>
+            </div>
+
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(function () {
+            $('.filter-btn').on('click', function () {
+                var error = false;
+                if ($('.start_date').val() == '') {
+                    $('.start_date').css('border', '1px solid red');
+                    error = true;
+                }
+
+
+                if($('.end_date').val() == '') {
+                    $('.end_date').css('border', '1px solid red');
+                    error = true;
+                }
+
+                if(error == true) {
+                    return;
+                }
+
+                var start_date = $('.start_date').val();
+                var end_date = $('.end_date').val();
+
+                var diesel_details_invoices_url = '{% url "other_expense:invoices" other_expense_id=other_expense.id %}';
+
+                window.location.href = diesel_details_invoices_url + 'start/' + start_date + '/end/' + end_date + '/';
+
+
+            });
+
+        });
+        function PrintInvoice(divName){
+             var printContents = document.getElementById(divName).innerHTML;
+             var originalContents = document.body.innerHTML;
+             document.body.innerHTML = printContents;
+             $('table').removeClass('table-bordered');
+             $('tr').css('border', '1px solid');
+             $('td').css('border', '1px solid');
+             $('th').css('border', '1px solid');
+             $('.remove-print-display').hide();
+             window.print();
+             $('.remove-print-display').show();
+             document.body.innerHTML = originalContents;
+        }
+    </script>
+{% endblock %}

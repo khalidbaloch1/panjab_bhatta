@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block menu_other_expenses %}active{% endblock %}
+{% block sub_menu_all_expenses %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10">
+                <br>
+                <br><br>
+                <div class="content-panel table-responsive">
+                    <h2 class="text-center"><span style="color: teal; font-weight: bold">Other Expenses List</span></h2>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group custom-search-form col-md-12" style="left: 5px">
+                                <input type="text" class="form-control search-invoice" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table table-striped table-advance table-hover table-bordered incoices-table">
+                        <thead style="background-color: teal !important;">
+                        <tr style="color: white">
+                            <th class="text-center"> S / No</th>
+                            <th class="text-center"> Expenses Name</th>
+                            <th class="text-center"> Mobile</th>
+                            <th class="text-center"> Department</th>
+                            <th class="text-center"> Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="invoices-table-body">
+                        {% if not object_list %}
+                            <tr><td colspan="11" class="text-center">Record Not Found</td></tr>
+                        {% endif %}
+                        {% for other_expense in object_list %}
+                            <tr style="color: black; font-weight: bold">
+                                <td class="text-center">{{ forloop.counter }}</td>
+                                <td class="text-center">{{ other_expense.name|title }}</td>
+                                <td class="text-center">{{ other_expense.mobile_no }}</td>
+                                <td class="text-center">{{ other_expense.expense_type }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'other_expense:delete' pk=other_expense.id %}" onclick="return confirm('&#9940 Are you sure you want to delete this item &#9940;')"><button class="btn btn-danger btn-xs">Delete</button></a>
+                                    <a href="{% url 'other_expense:update' pk=other_expense.id %}"><button class="btn btn-success btn-xs">Update</button></a>
+                                    {% if other_expense.expense_type == other_expense.EXPENSE_DIESEL %}
+                                    <a href="{% url 'other_expense:diesel_details' pk=other_expense.id %}"><button class="btn btn-primary btn-xs">Add Diesel</button></a>
+                                    <a href="{% url 'other_expense:invoices' other_expense_id=other_expense.id %}"><button class="btn btn-danger btn-xs">Diesel Reports</button></a>
+                                    {% else %}
+                                    {% if other_expense.expense_type == other_expense.EXPENSE_MITTI %}
+                                    <a href="{% url 'other_expense:mitti_details' pk=other_expense.id %}"><button class="btn btn-primary btn-xs">Add Mitti</button></a>
+                                    <a href="{% url 'other_expense:mitti_invoices' other_expense_id=other_expense.id %}"><button class="btn btn-danger btn-xs">Mitti Reports</button></a>
+                                    {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if paginator.page_range|length > 1 %}
+                        <div class="text-center">
+                            <ul class="pagination">
+                                <li><a  style="background-color: #3070A8; color: white" class="page_previous" href="{% if page_obj.has_previous %}{{ request.path }}?page={{ page_obj.previous_page_number }}{% else %}#{% endif %}" title="Previous"><<</a></li>
+                                <li><a style="background-color: #3070A8; color: white" class="page_next" href="{% if page_obj.has_next %}{{ request.path }}?page={{ page_obj.next_page_number }}{% else %}#{% endif %}" title="Next">>></a></li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function(){
+            $(".search-invoice").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".invoices-table-body tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            var other_expense_url = '{% url "other_expense:list" %}';
+            $('#season_filter').on('change', function () {
+                if ($(this).val() == 'All Seasons') {
+                    window.location.href = other_expense_url
+                } else {
+                    window.location.href = other_expense_url + $(this).val() + '/';
+                }
+            });
+            $('#season_filter option:contains("{{ season_kw }}")').prop('selected',true);
+
+        });
+    </script>
+{% endblock %}

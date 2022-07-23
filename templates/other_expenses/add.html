@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block menu_other_expenses %}active{% endblock %}
+{% block sub_menu_add %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <br>
+        <a href="{% url 'koyla:list' %}"><button type="button" class="btn btn-primary" style="float: left">Go To List</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h3 class="text-center">Add Expenses</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="#" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            {% csrf_token %}
+
+                            <label class="form-control-label" name="bhatta_name">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta_name">
+                                {% for bhatta in bhatta_list %}
+                                <option value="{{ bhatta.name }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+
+                            <label><strong>Expense Name</strong></label>
+                            <input type="text" class="form-control name" name="name" placeholder="Expense Name"><br>
+
+                            <label class="form-control-label" name="expense_type">Department<span style="color:red">*</span></label>
+                            <select class="form-control" name="expense_type">
+                                <option value="diesel">Diesel</option>
+                                <option value="Mitti">Mitti</option>
+                            </select>
+                            <br>
+
+                            <label><strong>Mobile No.</strong></label>
+                            <input type="text" class="form-control mobile_no" name="mobile_no" placeholder="Mobile No.">
+                            <br>
+
+                            <button type="submit" class="btn btn-primary product-sub-btn" style="float: right">Save Expense</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

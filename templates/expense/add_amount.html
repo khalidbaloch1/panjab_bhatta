@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block menu_income %}active{% endblock %}
+{% block sub_menu_create_stock %}active{% endblock %}
+
+{% block content %}
+    <div class="col-md-6">
+        <br><br>
+        <div class="content-panel">
+            <h3 class="text-center">Remaining Stock Add</h3>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'expense:create_stock' %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            {% csrf_token %}
+                            <label><strong>Season</strong></label>
+                            <input type="text" class="form-control season_name" name="season_name" autocomplete="off" placeholder="Season" list="season-list">
+                            <datalist id="season-list">
+                                {% for season in seasons %}
+                                    <option value="{{ season.season_year }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            <br>
+                            <label><strong>Available Stock Payments</strong></label>
+                            <input type="text" class="form-control stock_amount" name="stock_amount" value="0"><br>
+                            <button type="submit" class="btn btn-primary product-sub-btn" style="float: right">Save Stock</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

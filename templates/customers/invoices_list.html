@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block menu_customers %}active{% endblock %}
+{% block sub_menu_all_customer %}active{% endblock %}
+{% load static %}
+{% block content %}
+    {% load template_tags %}
+    <div class="col-md-12">
+            <br>
+            <a href="{% url 'customer:list' %}"><button type="button" class="btn btn-primary" style="float: left"> Customers </button></a>
+            <button type="button" class="btn btn-primary print" onclick="PrintInvoice('print-invoice')" style="margin-left: 10px"> Print </button>
+            <br><br><br>
+            <div class="content-panel table-responsive print-invoice" id="print-invoice">
+                <table class="table table-striped table-advance table-hover invoices-table table-bordered table-responsive">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="col-lg-2 remove-print-display">
+                                <label><strong><span style="color: black">Start Date:</span></strong></label>
+                                <input type="date" class="form-control start_date" id="start_date" value="{{ start_date }}">
+                            </div>
+                            <div class="col-lg-2 remove-print-display">
+                                <label><strong><span style="color: black">End Date:</span></strong></label>
+                                <input type="date" class="form-control end_date" id="end_date" value="{{ end_date }}">
+                            </div>
+                            <div class="col-lg-2 remove-print-display">
+                                <label><strong>&nbsp;</strong></label><br>
+                                <button class="btn btn-primary filter-btn">Filter</button>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="col-lg-12">
+                                <label><strong class="f-size">Bill From:</strong></label> <span class="f-size"><b>Nawab Bricks & Manufacturs</b></span>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong class="f-size">Contact:</strong></label> <span class="f-size">0302-2221812</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            <div class="col-lg-12">
+                                <label><strong class="f-size">Bill To: </strong></label><span class="f-size"> {{customer.name|title}}</span>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong class="f-size">Address:</strong></label><span class="f-size">{{customer.address|title}}</span>
+                            </div>
+                            <div class="col-lg-12">
+                                <label><strong class="f-size">Contact: </strong></label><span class="f-size"> {{customer.mobile_no}}</span>
+                            </div>
+                    <table class="table table-bordered">
+                    <thead style="background-color: teal;">
+                    <tr style="color: white">
+                        <th class="remove-print-display text-center"> S.No</th>
+                        <th  class="text-center">Date</th>
+                        <th  class="text-center"> Season</th>
+                        <th  class="text-center">Challan</th>
+                        <th  class="text-center">Transport</th>
+                        <th  class="text-center">Quality</th>
+                        <th  class="text-center">Quantity</th>
+                        <th  class="text-center">Price</th>
+                        <th  class="text-center">Total</th>
+                        <th  class="text-center">Shipping</th>
+                        <th  class="text-center">Remaining</th>
+                    </tr>
+                    </thead>
+                    <tbody class="invoices-table-body">
+                    {% with remaining=0 %}
+                        {% for q in query %}
+                            {% if q.payment_date %}
+                                <tr>
+                                    <td  class="remove-print-display text-center">{{ forloop.counter }}</td>
+                                    <td  class="text-center"><span style="color: red !important; font-weight: bold">{{ q.payment_date|date:"d/m/y" }}</span></td>
+                                    <td colspan="4" class="text-center"><span style="color: red !important; font-weight: bold">{% if q.details %}{{ q.details}}{% else %}{{ q.payment_type }}{% endif %}</span></td>
+                                    <td colspan="4" class="text-center"><span style="color: red !important; font-weight: bold">{{ q.amount|floatformat:'-2' }}</span></td>
+                                    {% update_variable remaining|subtract:q.amount|floatformat:"-2" as remaining %}
+                                    <td  class="text-center"><span style="color: red !important; font-weight: bold">{{ remaining }}</span></td>
+                                </tr>
+                            {% elif q.amount %}
+                                <tr>
+                                    <td class="remove-print-display text-center">{{ forloop.counter }}</td>
+                                    <td  class="text-center"><span style="font-weight: bold">{{ q.date_added|date:"d/m/y" }}</span></td>
+                                    <td colspan="4" class="text-center"><span style="font-weight: bold">{{ q.details}}</span></td>
+                                    <td colspan="4" class="text-center"><span style="font-weight: bold">{{ q.amount|floatformat:'-2' }}</span></td>
+                                    {% update_variable remaining|add:q.amount|floatformat:"-2" as remaining %}
+                                    <td  class="text-center"><span style="color: red !important; font-weight: bold">{{ remaining }}</span></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td class="remove-print-display text-center">{{ forloop.counter }}</td>
+                                    <td  class="text-center"><span style="color: black">{{ q.invoice_date|date:"d/m/y" }}</span></td>
+                                    <td  class="text-center"><span style="color: black">{{ q.season.season_year }}</span></td>
+                                    <td  class="text-center"><span style="color: black">{{ q.challan_no }}</span></td>
+                                    <td  class="text-center"><span style="color: black">{{ q.transport }}</span></td>
+                                    <td  class="text-center">
+                                        {% for quality in q.purchased_stock.all %}
+                                            <span style="color: black">{{ quality.stock.item_name }}{% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+                                    </span></td>
+                                    <td  class="text-center"><span style="color: black">{{ q.total_quantity }}</span></td>
+                                    <td  class="text-center">
+                                        {% for quality in q.purchased_stock.all %}
+                                            <span style="color: black">{{ quality.price|floatformat:'-2' }}{% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+                                    </span></td>
+                                    <td  class="text-center"><span style="color: black">{{ q.grand_total|floatformat:"-2" }}</span></td>
+                                    <td  class="text-center"><span style="color: black">{{ q.shipping|floatformat:"-2" }}</span></td>
+                                    {% update_variable remaining|add:q.remaining_payment|floatformat:"-2" as remaining %}
+                                    <td  class="text-center"><span style="color: black">{{ remaining }}</span></td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                    </tbody>
+                </table>
+               <div class=" text-right">
+                    <label><strong><span style="color: black">Total Quantity:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ total_quantity|floatformat:'-2' }}</span></span><br>
+                    <label><strong><span style="color: black">Total Amount:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ total_amount|floatformat:'-2' }}</span></span><br>
+                    <label><strong><span style="color: black">Paid Amount:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ customer.total_payment|floatformat:'-2' }}</span></span><br>
+                    <label><strong><span style="color: black">Remaining Balance:</span></strong></label> <span style="margin: 15px;"><span style="color: red !important; font-weight: bold">{{ customer.remaining_balance|floatformat:'-2' }}</span></span><br>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(function () {
+            $('.filter-btn').on('click', function () {
+                var error = false;
+                if ($('.start_date').val() == '') {
+                    $('.start_date').css('border', '1px solid red');
+                    error = true;
+                }
+
+
+                if($('.end_date').val() == '') {
+                    $('.end_date').css('border', '1px solid red');
+                    error = true;
+                }
+
+                if(error == true) {
+                    return;
+                }
+
+                var start_date = $('.start_date').val();
+                var end_date = $('.end_date').val();
+
+                var customer_invoices_url = '{% url "customer:invoices" customer_id=customer.id %}';
+
+                window.location.href = customer_invoices_url + 'start/' + start_date + '/end/' + end_date + '/';
+
+
+            });
+
+        });
+        function PrintInvoice(divName){
+             var printContents = document.getElementById(divName).innerHTML;
+             var originalContents = document.body.innerHTML;
+             document.body.innerHTML = printContents;
+             $('table').removeClass('table-bordered');
+             $('tr').css('border', '1px solid');
+             $('td').css('border', '1px solid');
+             $('th').css('border', '1px solid');
+             $('.remove-print-display').hide();
+             window.print();
+             $('.remove-print-display').show();
+             document.body.innerHTML = originalContents;
+        }
+    </script>
+
+{% endblock %}

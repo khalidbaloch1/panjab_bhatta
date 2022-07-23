@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block menu_account %}active{% endblock %}
+{% block sub_menu_all_account %}active{% endblock %}
+{% block content %}
+
+    <div class="col-md-6">
+        <br>
+        <a href="{% url 'account:income_details' income_account_id=account.id %}"><button type="button" class="btn btn-primary" style="float: left">Back</button></a>
+        <br><br><br>
+        <div class="content-panel">
+            <h2 class="text-center"><a href="#">{{ account.name|title }}</a></h2>
+            <div class="panel-body">
+                <form class="form-horizontal add-customer-form" action="{% url 'account:credit' pk=account.id %}" method="post" >
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            {% csrf_token %}
+                            <label class="form-control-label" name="bhatta">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta">
+                                {% for bhatta in bhatta %}
+                                <option value="{{ bhatta.id }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+
+                            <label class="form-control-label" name="season">Season<span style="color:red">*</span></label>
+                            <select class="form-control" name="season">
+                                {% for season in seasons %}
+                                <option value="{{ season.id }}">{{ season.season_year }}</option>
+                                {% endfor %}
+                            </select><br>
+
+                            <label class="form-control-label" name="income_payment_type">Ledger Book<span style="color:red">*</span></label>
+                            <select class="form-control" name="income_payment_type">
+                                <option value="Credit Ledger Book">Credit Ledger Book</option>
+                            </select><br>
+
+                             <label><strong>Amount</strong></label>
+                            <input type="number" class="form-control income_credit_amount" name="income_credit_amount" value="0"><br>
+
+                            <label><strong>Date</strong></label>
+                            <input type="date" class="form-control income_date" name="income_date"><br>
+
+                            <textarea maxlength="500" rows="4" name="income_details" class="form-control income_details"  placeholder ="Please Add Details"></textarea> <br>
+
+
+                            <input type="hidden" name="account" value="{{ account.id }}">
+                        </div>
+                        <div class="col-sm-12 col-lg-12 col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block product-sub-btn">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
