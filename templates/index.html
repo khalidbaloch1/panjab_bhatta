@@ -4,6 +4,181 @@
 {% block menu_dashboard %}active{% endblock %}
 
 {% block content %}
+
+    <!-- Add Staff Modal HTML -->
+	<div id="addstaff" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'staff:create' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title text-center">Add Staff</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="col-md-6 form-group">
+                            <label class="form-control-label">Staff Name <span style="color:red">*</span></label>
+                            <input type="text" name="name" class="form-control form-control-alternative" placeholder="Add Staff Name" required>
+                        </div>
+
+                    <div class="col-md-6 form-group">
+                        <label class="form-control-label">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control bhatta_name" name="bhatta_name" id="bhatta_list" autocomplete="off" list="bhatta_list">
+                            {% for bhatta in bhattas %}
+                            <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label class="form-control-label" name="customer_type">Staff Type<span style="color:red">*</span></label>
+                        <input type="text" class="form-control staff_type" name="staff_type" autocomplete="off" placeholder="Select type" list="staff_type_list">
+                        <datalist id="staff_type_list">
+                            <option value="Salary Staff"></option>
+                            <option value="Weekly Staff"></option>
+                            <option value="Other Staff"></option>
+                        </datalist>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label class="form-control-label">Designation <span style="color:red"></span></label>
+                        <input type="text" name="designation" class="form-control form-control-alternative" placeholder="Designation">
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label class="form-control-label">Rate <span style="color:red"></span></label>
+                        <input type="text" name="rate" class="form-control form-control-alternative" placeholder="Rate">
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label class="form-control-label">Mobile <span style="color:red"></span></label>
+                        <input type="text" name="mobile_no" class="form-control form-control-alternative" placeholder="Mobile">
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label class="form-control-label">Joining Date <span style="color:red"></span></label>
+                        <input type="date" name="joining_date" class="form-control form-control-alternative" placeholder="Add Joining Date" >
+                    </div>
+
+                        <div class="col-md-6 form-group">
+                            <label class="form-control-label">Leaving Date  <span style="color:red"></span></label>
+                            <input type="date" name="leaving_date" class="form-control form-control-alternative" placeholder="Add Leaving Date" >
+                        </div>
+                    </div>
+                    <br>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <!-- Add Staff Modal End -->
+
+    <!-- Add Customer Modal HTML -->
+	<div id="addcustomer" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'customer:add' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title text-center">Add Customer</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Customer Name <span style="color:red">*</span></label>
+                            <input type="text" name="name" class="form-control form-control-alternative" placeholder="Add Customer Name" required>
+                        </div>
+
+                        <div class="form-group">
+                        <label class="form-control-label">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control bhatta_name" name="bhatta_name" autocomplete="off" list="bhatta_list">
+                            {% for bhatta in bhattas %}
+                            <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label" name="customer_type">Type<span style="color:red">*</span></label>
+                            <select class="form-control" name="customer_type">
+                                <option value="Khata">Khata</option>
+                                <option value="Advance">Advance</option>
+                            </select>
+                        </div>
+
+						<div class="form-group">
+                            <label class="form-control-label" name="customer_status">Select Status Type<span style="color:red">*</span></label>
+                            <select class="form-control" name="customer_status">
+                                <option value="Activate">Activate</option>
+                                <option value="Deactivate">Deactivate</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Mobile <span style="color:red"></span></label>
+                            <input type="text" name="mobile_no" class="form-control form-control-alternative" placeholder="Mobile">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Complete Address <span style="color:red"></span></label>
+                            <input type="text" name="address" class="form-control form-control-alternative" placeholder="Add Address" >
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <!-- Add Customer Modal End -->
+
+    <!-- Add Koyla Modal HTML -->
+	<div id="addkoyla" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'koyla:add' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title text-center">Add New Koyla & Toh</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Koyla Expense Name <span style="color:red">*</span></label>
+                            <input type="text" name="name" class="form-control form-control-alternative" placeholder="Add Owner Name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Department <span style="color:red"></span></label>
+                            <input type="text" name="department" class="form-control form-control-alternative" placeholder="Add department">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Bhatta<span style="color:red">*</span></label>
+                                <select class="form-control bhatta_name" name="bhatta_name" autocomplete="off" list="bhatta_list">
+                                {% for bhatta in bhattas %}
+                                <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <!-- Add Koyla Modal End -->
+
+
+
     <div class="row">
         <div class="col-lg-12 main-chart">
             <div class="row">

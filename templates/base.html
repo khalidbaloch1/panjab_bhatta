@@ -71,7 +71,7 @@
                         <span>Staffs</span>
                     </a>
                     <ul class="sub">
-                        <li class="{% block sub_menu_new_staff %}{% endblock %}"><a  href="{% url 'staff:create' %}">New Staff</a></li>
+                        <li class="{% block sub_menu_new_staff %}{% endblock %}"><a  href="#addstaff{% url 'staff:create' %}" data-toggle="modal" data-target="#addstaff">New Staff</a></li>
                         <li class="{% block sub_menu_all_staff %}{% endblock %}"><a  href="{% url 'staff:list' %}">All Staffs</a></li>
                         <li class="{% block menu_staff_jamah_reports %}{% endblock %}"><a href="{% url 'common:staff_jamah_reports' %}">Staffs Reports</a></li>
                     </ul>
@@ -83,7 +83,7 @@
                         <span>Customers</span>
                     </a>
                     <ul class="sub">
-                        <li class="{% block sub_menu_new_customer %}{% endblock %}"><a href="#add{% url 'customer:add' %}" data-toggle="modal" data-target="#add">New Customer</a></li>
+                        <li class="{% block sub_menu_new_customer %}{% endblock %}"><a href="#addcustomer{% url 'customer:add' %}" data-toggle="modal" data-target="#addcustomer">New Customer</a></li>
                         <li class="{% block sub_menu_all_customer %}{% endblock %}"><a href="{% url 'customer:list' %}">All Customers</a></li>
                         <li class="{% block menu_khatta_reports %}{% endblock %}"><a href="{% url 'common:khatta_reports' %}">Customers Khatta Reports</a></li>
                     </ul>
@@ -116,7 +116,7 @@
                         <span>Koyla</span>
                     </a>
                     <ul class="sub">
-                        <li class="{% block sub_menu_new_koyla %}{% endblock %}"><a  href="{% url 'koyla:add' %}">Add Koyla Name</a></li>
+                        <li class="{% block sub_menu_new_koyla %}{% endblock %}"><a  href="#addkoyla{% url 'koyla:add' %}" data-toggle="modal" data-target="#addkoyla">Add Koyla Name</a></li>
                         <li class="{% block sub_menu_all_koyla %}{% endblock %}"><a  href="{% url 'koyla:list' %}">Koyla List</a></li>
                     </ul>
                 </li>

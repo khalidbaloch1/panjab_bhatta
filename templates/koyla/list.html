@@ -56,6 +56,46 @@
         </div>
     </div>
 
+<!-- Add Koyla Modal HTML -->
+	<div id="addkoyla" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'koyla:add' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title text-center">Add New Koyla & Toh</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Koyla Expense Name <span style="color:red">*</span></label>
+                            <input type="text" name="name" class="form-control form-control-alternative" placeholder="Add Owner Name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Department <span style="color:red"></span></label>
+                            <input type="text" name="department" class="form-control form-control-alternative" placeholder="Add department">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Bhatta<span style="color:red">*</span></label>
+                                <select class="form-control bhatta_name" name="bhatta_name" autocomplete="off" list="bhatta_list">
+                                {% for bhatta in bhattas %}
+                                <option value="{{ bhatta.name }}">{{ bhatta.code }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <!-- Add Koyla Modal End -->
+
 {% endblock %}
 {% block scripts %}
     {{ block.super }}

@@ -4,9 +4,9 @@
 {% block sub_menu_all_koyla %}active{% endblock %}
 
 {% block content %}
-    <br>
+    <br><br>
     <a href="{% url 'koyla:add_ledger' pk=koyla.id %}"><button type="button" class="btn btn-primary">Jamah</button></a>
-    <a href="{% url 'koyla:payment_ledger' pk=koyla.id %}"><button type="button" class="btn btn-primary">Banam</button></a>
+    <a href="#AddBanam" class="btn btn-warning" data-toggle="modal"><i class="material-icons"></i> <span>Add Banam (Amount)</span></a>
     <br><br><br>
     <div class="content-panel">
         <h2 class="text-center"><span style="color: teal; font-weight: bold">{{ koyla.name }} | <small>Payment Details</small></span></h2>
@@ -80,4 +80,48 @@
         </div>
         {% endif %}
     </div>
+
+<!-- Add Banam Amount Modal HTML -->
+	<div id="AddBanam" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'koyla:payment_ledger' pk=koyla.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="koyla" value="{{ koyla.id }}">
+					<div class="modal-header">
+                        <h3 class="modal-title text-center">{{ koyla.name }} | <small>Add Banam Payment</small></h3>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Amount <span style="color:red">*</span></label>
+                            <input type="text" name="amount" class="form-control form-control-alternative" placeholder="Add Amount" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Payment Type <span style="color:red"></span></label>
+                            <input type="text" class="form-control form-control-alternative" name="payment_type" placeholder="Payment Type (Optional) .e.g. Cash, Check or etc">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Details <span style="color:red"></span></label>
+                            <input type="text" name="details" class="form-control form-control-alternative" placeholder="Add Details">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Date <span style="color:red">*</span></label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <!-- Add Banam Amount Modal End -->
+
 {% endblock %}
