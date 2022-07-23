@@ -6,8 +6,10 @@
 <div class="content-wrapper">
     <section class="content-header">
         <br>
+        {#<a href="#AddMittiSand" class="btn btn-success" data-toggle="modal"><i class="material-icons"></i> <span>Add (Mitti / Sand)</span></a>#}
+        <a href="#AddDebit" class="btn btn-warning" data-toggle="modal"><i class="material-icons"></i> <span>Add Debit (Banam)</span></a>
         <a href="{% url 'other_expense:mitti_credit' pk=other_expense.id %}"><button type="button" value="Create" class="btn btn-danger">Add (Mitti / Sand)</button></a>
-        <a href="{% url 'other_expense:mitti_debit' pk=other_expense.id %}"><button type="button" value="Create" class="btn btn-success">Debit (Banam)</button></a>
+        {#<a href="{% url 'other_expense:mitti_debit' pk=other_expense.id %}"><button type="button" value="Create" class="btn btn-success">Debit (Banam)</button></a>#}
         <br><br><br>
     </section>
     <section class="content-panel">
@@ -76,6 +78,104 @@
         </div>
     </section>
 </div>
+
+<!-- Add Mitti Sand Amount Modal HTML -->
+	<!-- <div id="AddMittiSand" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'other_expense:mitti_credit' pk=other_expense.id %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="other_expense" value="{{ other_expense.id }}">
+					<div class="modal-header">
+						<h3 class="text-center">{{ other_expense.name|title }}</h3>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                    <div class="col-lg-4">
+                        <label class="form-control-label" name="bhatta">Bhatta<span style="color:red">*</span></label>
+                            <select class="form-control" name="bhatta">
+                                {% for bhatta in bhatta %}
+                                <option value="{{ bhatta.id }}">{{ bhatta.name }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Amount <span style="color:red">*</span></label>
+                            <input type="text" name="mitti_debit_amount" class="form-control form-control-alternative" placeholder="Add Amount" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Details <span style="color:red"></span></label>
+                            <textarea type="text" name="mitti_details" class="form-control form-control-alternative" placeholder="Please Add Details"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label" name="mitti_payment_type">Debit Ledger Book<span style="color:red">*</span></label>
+                            <select class="form-control" name="mitti_payment_type">
+                                <option value="Debit Ledger Book">Debit Ledger Book</option>
+                            </select>
+                        </div>
+                        <br>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Date <span style="color:red">*</span></label>
+                            <input type="date" name="mitti_date" class="form-control" required>
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>-->
+
+<!-- Add  Debit Amount Modal HTML -->
+	<div id="AddDebit" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'other_expense:mitti_debit' pk=other_expense.id %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <input type="hidden" name="other_expense" value="{{ other_expense.id }}">
+					<div class="modal-header">
+						<h3 class="text-center">{{ other_expense.name|title }}</h3>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Amount <span style="color:red">*</span></label>
+                            <input type="text" name="mitti_debit_amount" class="form-control form-control-alternative" placeholder="Add Amount" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Details <span style="color:red"></span></label>
+                            <textarea type="text" name="mitti_details" class="form-control form-control-alternative" placeholder="Please Add Details"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label" name="mitti_payment_type">Debit Ledger Book<span style="color:red">*</span></label>
+                            <select class="form-control" name="mitti_payment_type">
+                                <option value="Debit Ledger Book">Debit Ledger Book</option>
+                            </select>
+                        </div>
+                        <br>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Date <span style="color:red">*</span></label>
+                            <input type="date" name="mitti_date" class="form-control" required>
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 {% endblock %}
 
 {% block script %}
