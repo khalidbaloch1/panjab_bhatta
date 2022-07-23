@@ -83,8 +83,8 @@
                         <span>Customers</span>
                     </a>
                     <ul class="sub">
-                        <li class="{% block sub_menu_new_customer %}{% endblock %}"><a  href="{% url 'customer:add' %}">New Customer</a></li>
-                        <li class="{% block sub_menu_all_customer %}{% endblock %}"><a  href="{% url 'customer:list' %}">All Customers</a></li>
+                        <li class="{% block sub_menu_new_customer %}{% endblock %}"><a href="#add{% url 'customer:add' %}" data-toggle="modal" data-target="#add">New Customer</a></li>
+                        <li class="{% block sub_menu_all_customer %}{% endblock %}"><a href="{% url 'customer:list' %}">All Customers</a></li>
                         <li class="{% block menu_khatta_reports %}{% endblock %}"><a href="{% url 'common:khatta_reports' %}">Customers Khatta Reports</a></li>
                     </ul>
                 </li>

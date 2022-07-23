@@ -79,11 +79,13 @@ class CustomerAddFormView(FormView):
         else:
             return HttpResponseRedirect(reverse('common:login'))
 
-    def form_valid(self, form):
+        def form_valid(self, form):
         customer = form.save(commit=False)
-        customer.bhatta = Bhatta.objects.get(
-            name=self.request.POST.get('bhatta_name')
-        )
+        try:
+            customer.bhatta = Bhatta.objects.get(
+                name=self.request.POST.get('bhatta_name'))
+        except:
+            pass
         customer.save()
         return HttpResponseRedirect(reverse('customer:list'))
     

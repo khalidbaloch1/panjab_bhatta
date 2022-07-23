@@ -75,6 +75,58 @@
             </div>
         </div>
     </div>
+
+<!-- Add Customer Modal HTML -->
+	<div id="add" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="{% url 'customer:add' %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title text-center">Add Customer</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-control-label">Customer Name <span style="color:red">*</span></label>
+                            <input type="text" name="name" class="form-control form-control-alternative" placeholder="Add Customer Name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label" name="customer_type">Type<span style="color:red">*</span></label>
+                            <select class="form-control" name="customer_type">
+                                <option value="Khata">Khata</option>
+                                <option value="Advance">Advance</option>
+                            </select>
+                        </div>
+
+						<div class="form-group">
+                            <label class="form-control-label" name="customer_status">Select Status Type<span style="color:red">*</span></label>
+                            <select class="form-control" name="customer_status">
+                                <option value="Activate">Activate</option>
+                                <option value="Deactivate">Deactivate</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Mobile <span style="color:red"></span></label>
+                            <input type="text" name="mobile_no" class="form-control form-control-alternative" placeholder="Mobile">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Complete Address <span style="color:red"></span></label>
+                            <input type="text" name="address" class="form-control form-control-alternative" placeholder="Add Address" >
+                        </div>
+                    </div>
+					<div class="modal-footer">
+						<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="btn btn-success" value="Add">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 {% endblock %}
 
 {% block scripts %}
