@@ -11,7 +11,19 @@
                         <button type="button" class="btn btn-primary print-invoice-btn" onclick="PrintInvoice('print-invoices')">Print Invoice</button>
                     </div>
                 <div class=" col-lg-8 col-lg-offset-2 content-panel table-responsive print-invoices" id="print-invoices">
-                            <h2 class="text-center" style="color: #428bca !important">{{ staff.name }}</h2>
+                    {#    <div class="well">#}
+                    <div class="form-group col-lg-3 col-md-6 col-sm-6 remove-print-display">
+                        <label>Select list:</label>
+                        <select class="form-control" id="season_filter">
+                            <option>All Seasons</option>
+                            {% for season in seasons %}
+                                <option>{{ season.season_year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            {#    </div>#}
+                        <h2 class="text-right" style="color: #428bca !important">{{ staff.name }}</h2>
+                        <br>
                             <th class="col-lg-15">
                             <h5 style="left: 5px"><span style="color: teal; font-weight: bold">Total Banam Amount</span></h5>
                             <table class="table table-striped table-advance table-hover table-bordered incoices-table" style="table-color: #33708f;">
@@ -86,7 +98,19 @@
 {% endblock %}
 {% block scripts %}
 {{ block.super }}
-    <script>
+        <script>
+    $(document).ready(function(){
+            var details_reports_url = '{% url 'staff:details_reports' pk=staff.id %}';
+            $('#season_filter').on('change', function () {
+                if ($(this).val() == 'All Seasons') {
+                    window.location.href = details_reports_url
+                } else {
+                    window.location.href = details_reports_url + $(this).val() + '/';
+                }
+            });
+            $('#season_filter option:contains("{{ season_kw }}")').prop('selected',true);
+
+        });
         function PrintInvoice(divName){
              var printContents = document.getElementById(divName).innerHTML;
              var originalContents = document.body.innerHTML;

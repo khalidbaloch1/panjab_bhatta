@@ -28,14 +28,14 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-lg-2">
-                            <select class="form-control" id="season_filter">
-                                <option>All Seasons</option>
-                                {% for season in seasons %}
-                                    <option>{{ season.season_year }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        {#<div class="col-lg-2">#}
+                            {#<select class="form-control" id="season_filter">#}
+                                {#<option>All Seasons</option>#}
+                                {#{% for season in seasons %}#}
+                                    {#<option>{{ season.season_year }}</option>#}
+                                {#{% endfor %}#}
+                            {#</select>#}
+                        {#</div>#}
                     </div>
                     <div style="float: right; padding: 10px;" class="remove-print-display">
                         <strong><span style="color: #428bca !important; font-size: 16px">Total Staff:</span><span style="color: red !important; font-size: 16px"> {{ total_staff|floatformat:'-2' }}</span></strong>&nbsp;&nbsp;&nbsp;
@@ -55,6 +55,7 @@
                             <th class="text-center"> Joining Date</th>
                             <th class="text-center"> Rate / Salary</th>
                             <th class="text-center"> R / Balance</th>
+                            <th class="text-center"> STAFF PAYMENT Status</th>
                             <th class="text-center">Actions</th>
                         </tr>
                         </thead>
@@ -76,8 +77,10 @@
                                 {% if staff.staff_type == staff.STAFF_SALARY %}
                                 {#<td>{{ staff.remaining_balance|floatformat:-2}}</td>#}
                                 <td class="text-center">{{ staff.remaining_pay|floatformat:-2}}</td>
+                                <td class="text-center">{{ staff.staff_payment_action }}</td>
                                 {% else %}
                                 <td class="text-center">{{ staff.remaining_amount|floatformat:-2}}</td>
+                                <td class="text-center">{{ staff.staff_payment_action }}</td>
                                 {% endif %}
                                 <td class="text-center">
                                     <a href="{% url 'staff:update' pk=staff.id %}"><button class="btn btn-primary btn-xs">Update</button></a>

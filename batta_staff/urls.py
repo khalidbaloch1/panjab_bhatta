@@ -31,8 +31,12 @@ urlpatterns = [
         NormalStaffDetailsView.as_view(), name='details'
     ),
     url(
-        r'^(?P<pk>\d+)/details_reports/$',
+        r'^(?P<pk>\d+)/details/reports/$',
         NormalStaffDetailsReportsView.as_view(), name='details_reports'
+    ),
+    url(
+        r'^(?P<pk>\d+)/details/reports/(?P<season>[a-zA-Z0-9_-]+)/$',
+        NormalStaffDetailsReportsView.as_view(), name='details_reports_fiter'
     ),
     url(
         r'^(?P<pk>\d+)/weekly/reports/$',

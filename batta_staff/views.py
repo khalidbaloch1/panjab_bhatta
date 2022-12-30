@@ -313,13 +313,25 @@ class NormalStaffDetailsReportsView(TemplateView):
             return HttpResponseRedirect(reverse('common:login'))
 
     def get_context_data(self, **kwargs):
-        context = super(
-            NormalStaffDetailsReportsView, self).get_context_data(**kwargs)
-
+        context = super(NormalStaffDetailsReportsView, self).get_context_data(**kwargs)
         staff = Staff.objects.get(id=self.kwargs.get('pk'))
 
-        staff_credit = staff.staff_ledger.all()
-        staff_debit = staff.staff_ledger_payment.all()
+        if self.kwargs.get('season'):
+            staff_credit = staff.staff_ledger.filter(
+                season__season_year=self.kwargs.get('season')
+            )
+            staff_debit = staff.staff_ledger_payment.filter(
+                season__season_year=self.kwargs.get('season')
+            )
+            context.update({
+                'season_kw': Season.objects.get(
+                    season_year=self.kwargs.get('season')
+                )
+            })
+        else:
+
+            staff_credit = staff.staff_ledger.all()
+            staff_debit = staff.staff_ledger_payment.all()
 
         if staff_credit.exists():
             credit_amount = staff_credit.aggregate(Sum('amount'))
@@ -340,6 +352,7 @@ class NormalStaffDetailsReportsView(TemplateView):
             'credit_amount': credit_amount,
             'debit_amount': debit_amount,
             'grand_total': debit_amount - credit_amount,
+            'seasons': Season.objects.all().order_by('-id')
 
         })
         return context
