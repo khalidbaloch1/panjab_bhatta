@@ -45,7 +45,7 @@
                                     <td class="text-center" style="color: Red !important;">{{mitti.mitti_debit_amount|floatformat:-2 }}</td>
                                     <td class="text-center">{{mitti.mitti_details}}</td>
                                     <td class="remove-print-display">
-                                        <a href="{% url 'other_expense:mitti_delete' pk=mitti.pk %}" onclick="return confirm('&#9940 Are you sure you want to delete this item &#9940;')"><button class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></button></a>
+                                       {# <a href="{% url 'other_expense:mitti_delete' pk=mitti.pk %}" onclick="return confirm('&#9940 Are you sure you want to delete this item &#9940;')"><button class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></button></a>#}
                                         <a href="{% url 'other_expense:mitti_update' pk=mitti.id %}"><button class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></button></a>
                                     </td>
                                 </tr>
