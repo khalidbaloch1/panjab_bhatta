@@ -660,7 +660,7 @@ class QualityReportsView(TemplateView):
 
         nakasi_payment = StaffLedgerPayment.objects.filter(
             season__season_year=self.request.GET.get('season'),
-            staff__designation='Nakasi'
+            staff__staff_type=Staff.STAFF_WEEKLY,
         )
         if start and end:
             nakasi_payment = nakasi_payment.filter(
@@ -695,7 +695,7 @@ class QualityReportsView(TemplateView):
 
         bharai_payment = StaffLedgerPayment.objects.filter(
             season__season_year=self.request.GET.get('season'),
-            staff__designation='Bharai'
+            staff__staff_type=Staff.STAFF_WEEKLY,
         )
         if start and end:
             bharai_payment = bharai_payment.filter(
@@ -728,7 +728,7 @@ class QualityReportsView(TemplateView):
             )
         pathair_payment = StaffLedgerPayment.objects.filter(
             season__season_year=self.request.GET.get('season'),
-            staff__designation='Pathair'
+            staff__staff_type=Staff.STAFF_WEEKLY,
         )
         if start and end:
             pathair_payment = pathair_payment.filter(
@@ -767,7 +767,7 @@ class QualityReportsView(TemplateView):
 
         khari_mitti_payment = StaffLedgerPayment.objects.filter(
             season__season_year=self.request.GET.get('season'),
-            staff__designation='khari_mitti'
+            staff__staff_type=Staff.STAFF_WEEKLY,
         )
         if start and end:
             khari_mitti_payment = khari_mitti_payment.filter(
